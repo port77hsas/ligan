@@ -164,7 +164,10 @@ table.data td.acts{text-align:end;white-space:nowrap}
 .wm-band.top{top:0}.wm-band.bot{bottom:0;transform:scaleY(-1)}
 .wm-c{position:absolute;left:50%;top:52%;width:62%;max-height:70%;object-fit:contain;transform:translate(-50%,-50%);opacity:.05}
 .sheet.land .wm-c{width:42%}
-.wm-c.custom{opacity:.08}
+.wm-c.custom{opacity:.08;max-height:80%}
+.wm-pick{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.wm-thumb{width:120px;height:120px;border:1px dashed var(--line);border-radius:12px;display:grid;place-items:center;background:var(--bg);color:var(--muted);font-size:13px;overflow:hidden;flex:none}
+.wm-thumb img{max-width:100%;max-height:100%;object-fit:contain}
 .wm-h{position:absolute;left:5mm;bottom:5mm;width:44mm;opacity:.11}
 .sheet.land .wm-h{width:52mm}
 .cover .wm{z-index:0}.cover .wm-h{opacity:.18;width:60mm}
@@ -220,7 +223,7 @@ table.pt.dense td{padding:1px 3px;font-size:10.5px;line-height:1.25;white-space:
 .scard .seat small{font-size:9px}
 
 /* سير ورقة الإجابة */
-table.flow{width:100%;border-collapse:collapse;table-layout:fixed;flex:1}
+table.flow{width:100%;border-collapse:collapse;table-layout:fixed;flex:none}
 table.flow .grp th{border:0;padding:0 0 2.5mm;vertical-align:bottom}
 table.flow .grp th div{border:1.5px solid #6f8794;border-radius:9px;background:#e9f0f3;margin:0 .8mm;padding:2.6mm 1mm;font-weight:800;font-size:13.5px;color:#1d2b33}
 table.flow .grp th div.per{font-size:16px}
@@ -531,21 +534,29 @@ function viewGeneral(){
       <div class="fld"><label for="s-track">المسار</label><input id="s-track" value="${esc(S.settings.track)}" placeholder="مسارات / المسار العام"></div>
     </div>
     <div class="fld" style="margin-top:14px"><label for="s-ins">تعليمات هامة للطلاب (تظهر أسفل جدول الاختبارات) — اكتب كل تعليمة في سطر</label><textarea id="s-ins" style="min-height:150px">${esc(S.settings.instructions)}</textarea></div>
-    <div class="form-grid" style="margin-top:14px">
-      <div class="fld"><label for="s-wm">العلامة المائية في التقارير</label><select id="s-wm">
-        <option value="asir" ${S.settings.wm==="asir"?"selected":""}>هوية عسير (القط العسيري والبيوت الحجرية)</option>
-        <option value="custom" ${S.settings.wm==="custom"?"selected":""}>صورة أختارها${S.settings.wmImg?"":" (لم تُرفع بعد)"}</option>
-        <option value="none" ${S.settings.wm==="none"?"selected":""}>بدون علامة مائية</option></select></div>
-      <div class="fld"><label>&nbsp;</label><button class="btn" id="b-wm">${S.settings.wmImg?"تغيير صورة العلامة المائية":"رفع صورة للعلامة المائية"}</button></div>
-    </div>
     <p class="hint">هذه الإعدادات تظهر في التقارير فقط وتُحفظ على الجهاز، ولا تُكتب في ملف Excel.</p>
+  </div>
+  <div class="panel"><h3>العلامة المائية في التقارير</h3>
+    <label class="vchk" style="margin-bottom:10px"><input type="checkbox" id="s-wm-asir" ${wmAsirOn()?"checked":""}> إظهار هوية عسير (شريط القط العسيري والبيوت الحجرية)</label>
+    <div class="wm-pick">
+      <div class="wm-thumb">${S.settings.wmImg?`<img src="${S.settings.wmImg}" alt="صورة العلامة المائية">`:`<span>لا توجد صورة</span>`}</div>
+      <div style="display:flex;flex-direction:column;gap:10px;flex:1;min-width:0">
+        <div class="tools"><button class="btn primary" id="b-wm">${S.settings.wmImg?"تغيير الصورة":"إضافة صورة علامة مائية"}</button>${S.settings.wmImg?'<button class="btn danger" id="b-wm-del">حذف الصورة</button>':""}</div>
+        <div class="fld"><label for="s-wm-op">الشفافية: <b id="v-wm-op">${ar(S.settings.wmOp||8)}٪</b></label><input type="range" id="s-wm-op" min="3" max="30" step="1" value="${S.settings.wmOp||8}" style="min-height:auto;padding:0"></div>
+        <div class="fld"><label for="s-wm-sz">الحجم: <b id="v-wm-sz">${ar(S.settings.wmSz||55)}٪ من عرض الصفحة</b></label><input type="range" id="s-wm-sz" min="20" max="95" step="5" value="${S.settings.wmSz||55}" style="min-height:auto;padding:0"></div>
+      </div>
+    </div>
+    <p class="hint">الصورة تظهر باهتة في وسط كل صفحة من التقارير، وتقدر تستخدمها مع هوية عسير أو لحالها. اختر صورة PNG بخلفية شفافة لأفضل نتيجة.</p>
   </div>`;
   GENERAL_FIELDS.forEach(f=>$("#g-"+f.k).oninput=e=>{S.general[f.k]=e.target.value;save();});
   $("#s-region").oninput=e=>{S.settings.region=e.target.value;save();};
   $("#s-track").oninput=e=>{S.settings.track=e.target.value;save();};
   $("#s-ins").oninput=e=>{S.settings.instructions=e.target.value;save();};
-  $("#s-wm").onchange=e=>{S.settings.wm=e.target.value;save(); if(e.target.value==="custom"&&!S.settings.wmImg) $("#file-wm").click();};
+  $("#s-wm-asir").onchange=e=>{S.settings.wmAsir=e.target.checked;save();};
   $("#b-wm").onclick=()=>$("#file-wm").click();
+  if($("#b-wm-del")) $("#b-wm-del").onclick=()=>{S.settings.wmImg="";save();viewGeneral();toast("تم حذف صورة العلامة المائية");};
+  $("#s-wm-op").oninput=e=>{S.settings.wmOp=+e.target.value;$("#v-wm-op").textContent=ar(e.target.value)+"٪";save();};
+  $("#s-wm-sz").oninput=e=>{S.settings.wmSz=+e.target.value;$("#v-wm-sz").textContent=ar(e.target.value)+"٪ من عرض الصفحة";save();};
   const chips=(key,box)=>{ $(box).innerHTML = S[key].length? S[key].map((n,i)=>`<span class="chip">${esc(n)}<button aria-label="حذف ${esc(n)}" data-i="${i}">×</button></span>`).join("") : `<span class="hint" style="margin:0">لا توجد أسماء بعد.</span>`;
     $(box).querySelectorAll("button").forEach(b=>b.onclick=()=>{S[key].splice(+b.dataset.i,1);save();chips(key,box);}); };
   const adder=(key,inp,btn,box)=>{ const add=()=>{ const names=$(inp).value.split(/\n|،|,/).map(norm).filter(Boolean); names.forEach(n=>{ if(!S[key].includes(n)) S[key].push(n); }); $(inp).value=""; save(); chips(key,box); };
@@ -747,7 +758,7 @@ function importXlsx(file){
 }
 $("#file-xlsx").onchange=e=>{ const f=e.target.files[0]; if(f) importXlsx(f); e.target.value=""; };
 $("#file-wm").onchange=e=>{ const f=e.target.files[0]; if(!f) return; const rd=new FileReader();
-  rd.onload=()=>{ const img=new Image(); img.onload=()=>{ const k=Math.min(1,900/Math.max(img.width,img.height)); const c=document.createElement("canvas"); c.width=img.width*k; c.height=img.height*k; c.getContext("2d").drawImage(img,0,0,c.width,c.height); S.settings.wmImg=c.toDataURL("image/png"); S.settings.wm="custom"; save(); route(); toast("تم حفظ صورة العلامة المائية"); }; img.src=rd.result; };
+  rd.onload=()=>{ const img=new Image(); img.onload=()=>{ const k=Math.min(1,900/Math.max(img.width,img.height)); const c=document.createElement("canvas"); c.width=img.width*k; c.height=img.height*k; c.getContext("2d").drawImage(img,0,0,c.width,c.height); S.settings.wmImg=c.toDataURL("image/png"); save(); route(); toast("تم حفظ صورة العلامة المائية"); }; img.src=rd.result; };
   rd.readAsDataURL(f); e.target.value=""; };
 $("#file-logo").onchange=e=>{ const f=e.target.files[0]; if(!f) return; const rd=new FileReader();
   rd.onload=()=>{ const img=new Image(); img.onload=()=>{ const k=Math.min(1,400/Math.max(img.width,img.height)); const c=document.createElement("canvas"); c.width=img.width*k; c.height=img.height*k; c.getContext("2d").drawImage(img,0,0,c.width,c.height); S.settings.logo=c.toDataURL("image/png"); save(); route(); toast("تم حفظ الشعار"); }; img.src=rd.result; };
@@ -798,9 +809,12 @@ const WM = (()=>{
   const diamond = svgURI(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="-4 -4 208 208">${d}</svg>`);
   return {band,houses,diamond};
 })();
-function wmHTML(cover){ const st=S.settings; if(st.wm==="none") return "";
-  if(st.wm==="custom"&&st.wmImg) return `<div class="wm"><img class="wm-c custom" src="${st.wmImg}" alt=""></div>`;
-  return `<div class="wm"><div class="wm-band top" style="background-image:url('${WM.band}')"></div>${cover?"":`<img class="wm-c" src="${WM.diamond}" alt="">`}<img class="wm-h" src="${WM.houses}" alt=""><div class="wm-band bot" style="background-image:url('${WM.band}')"></div></div>`; }
+function wmAsirOn(){ const st=S.settings; return st.wmAsir!==undefined? !!st.wmAsir : st.wm!=="none"; }
+function wmHTML(cover){ const st=S.settings, asir=wmAsirOn(), img=st.wmImg;
+  if(!asir&&!img) return "";
+  const center = img? `<img class="wm-c custom" src="${img}" alt="" style="opacity:${(st.wmOp||8)/100};width:${st.wmSz||55}%">` : (asir&&!cover? `<img class="wm-c" src="${WM.diamond}" alt="">` : "");
+  const id = asir? `<div class="wm-band top" style="background-image:url('${WM.band}')"></div><img class="wm-h" src="${WM.houses}" alt=""><div class="wm-band bot" style="background-image:url('${WM.band}')"></div>` : "";
+  return `<div class="wm">${id}${center}</div>`; }
 
 /* تصغير محتوى الورقة تلقائيًا ليظهر كل تقرير في صفحة واحدة */
 function fitSheets(){ const wm=wmHTML(); document.querySelectorAll("#paper .sheet").forEach(sh=>{
@@ -952,7 +966,7 @@ const RENDER = {
       const ex=[]; const seen=new Set(); s.rows.filter(r=>norm(r.subject)).sort((a,b)=>rankGrade(a.grade)-rankGrade(b.grade)).forEach(r=>{ const k=norm(r.grade)+"|"+norm(r.subject); if(!seen.has(k)){seen.add(k);ex.push(r);} });
       const names=ks=>uniq(s.rows.flatMap(r=>ks.map(k=>shortName(r[k]))));
       const ctrl=names(["ctrl"]), corr=names(["c1","c2"]), rev=names(["r1","r2"]), mon=names(["mon"]), aud=names(["aud"]), fin=names(["aud2"]);
-      const h=Math.max(14,Math.min(42,128/n));
+      const h=Math.max(14,Math.max(48,Math.min(128,n*22))/n);
       return `<div class="sheet land">${head()}
         <table class="flow"><colgroup><col style="width:5.5%"><col style="width:5%"><col style="width:5%"><col style="width:5.5%"><col style="width:9%"><col style="width:4.5%"><col style="width:7%"><col style="width:7.5%"><col style="width:7.5%"><col style="width:7%"><col style="width:6.5%"><col style="width:6.5%"><col style="width:7%"><col style="width:7.5%"><col style="width:9%"></colgroup>
         <thead><tr class="grp"><th colspan="3"><div class="per">سير ورقة الإجابة</div></th><th colspan="3"><div class="per">الفترة : ( ${esc(s.period)} )</div></th><th colspan="3"><div>لجنة التصحيح والمراجعة</div></th><th colspan="3"><div>لجنة الرصد وإخراج النتائج</div></th><th colspan="2"><div>لجنة التصحيح والمراجعة</div></th><th><div class="sm">لجنة التحكم والضبط</div></th></tr>
