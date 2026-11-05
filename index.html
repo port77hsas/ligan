@@ -221,6 +221,9 @@ table.flow td{border:1.5px solid #8696a0;text-align:center;vertical-align:middle
 table.flow td.shade{background:#eef2f4}
 table.flow td.b{font-weight:800;font-size:13px}
 table.flow td.obs{font-weight:700;font-size:11px;line-height:1.5}
+td.top{vertical-align:top!important;padding-top:2.5mm!important}
+td.top .vt{margin:0 auto}
+table.pt td.sig{vertical-align:top;padding-top:1.6mm;font-weight:700;font-size:12px}
 .vt{writing-mode:vertical-rl;transform:rotate(180deg);margin:auto;font-weight:700;font-size:12.5px;line-height:1.9;max-height:118mm;white-space:pre-wrap}
 /* محضر فتح المظاريف */
 .formbar{display:grid;grid-template-columns:auto 1fr auto auto;border:1.5px solid #333;background:#e3efd9;margin:4mm 0 6mm;font-size:17px;font-weight:700}
@@ -858,13 +861,15 @@ const RENDER = {
     const map=new Map(); rows.forEach((d,i)=>{ const k=norm(d.date)+"|"+norm(d.grade)+"|"+norm(d.subject); if(!map.has(k)) map.set(k,{d:Object.assign({},d),dk:dateKey(d.date,i)}); else { const m=map.get(k).d; ["c1","r1","c2","r2","aud"].forEach(f=>{ if(!norm(m[f])) m[f]=d[f]; }); } });
     const items=[...map.values()].sort((a,b)=>a.dk-b.dk||rankGrade(a.d.grade)-rankGrade(b.d.grade));
     const days=new Map(); items.forEach(it=>{ const k=norm(it.d.day)+"|"+norm(it.d.date); if(!days.has(k)) days.set(k,[]); days.get(k).push(it.d); });
-    const auditors=uniq(items.map(x=>x.d.aud));
-    const pages=[]; let cur=[],n=0; days.forEach((v,k)=>{ if(false){pages.push(cur);cur=[];n=0;} cur.push([k,v]); n+=v.length; }); if(cur.length) pages.push(cur);
-    return pages.map((pg,pi)=>{ const total=pg.reduce((a,[,v])=>a+v.length,0);
+    const dl=[...days.entries()];
+    /* كل الأيام في صفحة واحدة إن اتسعت، وإلا كل يومين في صفحة */
+    const pages = items.length<=14 ? [dl] : dl.reduce((acc,x,i)=>{ if(i%2===0) acc.push([]); acc[acc.length-1].push(x); return acc; },[]);
+    return pages.map(pg=>{ const total=pg.reduce((a,[,v])=>a+v.length,0); const h=Math.max(11,Math.min(22,138/total));
+      const auditors=uniq(pg.flatMap(([,v])=>v.map(d=>shortName(d.aud))));
       return `<div class="sheet land">${head()}<div class="p-title">التصحيح والمراجعة والتدقيق</div>
-      <table class="pt"><colgroup><col style="width:8%"><col style="width:10%"><col style="width:10%"><col style="width:11%"><col style="width:13%"><col style="width:13%"><col style="width:13%"><col style="width:13%"><col style="width:9%"></colgroup>
+      <table class="pt"><colgroup><col style="width:8%"><col style="width:10%"><col style="width:13%"><col style="width:12%"><col style="width:12%"><col style="width:12%"><col style="width:12%"><col style="width:12%"><col style="width:9%"></colgroup>
       <thead><tr><th>اليوم</th><th>التاريخ</th><th>الصف</th><th>المادة</th><th>المصحح ١</th><th>المصحح ٢</th><th>المراجع ١</th><th>المراجع ٢</th><th>التدقيق</th></tr></thead>
-      <tbody>${pg.map(([k,v],di)=>{ const [day,date]=k.split("|"); return v.map((d,i)=>`<tr style="height:${Math.max(5,Math.min(13,118/total))}mm">${i===0?`<td rowspan="${v.length}" style="font-weight:700;font-size:13px">${esc(day)}</td><td rowspan="${v.length}" style="font-weight:700">${ar(date)}</td>`:""}<td>${esc(d.grade)}</td><td style="font-weight:700">${esc(d.subject)}</td><td>${esc(d.c1)}</td><td>${esc(d.c2)}</td><td>${esc(d.r1)}</td><td>${esc(d.r2)}</td>${(di===0&&i===0)?`<td rowspan="${total}" style="writing-mode:vertical-rl;font-weight:700;font-size:13px">${esc(auditors.join(" — "))}</td>`:""}</tr>`).join(""); }).join("")}</tbody></table>
+      <tbody>${pg.map(([k,v],di)=>{ const [day,date]=k.split("|"); return v.map((d,i)=>`<tr style="height:${h}mm">${i===0?`<td rowspan="${v.length}" style="font-weight:700;font-size:13px">${esc(day)}</td><td rowspan="${v.length}" style="font-weight:700">${ar(date)}</td>`:""}<td style="white-space:nowrap;font-size:10.5px">${esc(d.grade)}</td><td style="font-weight:700">${esc(d.subject)}</td><td class="sig">${esc(shortName(d.c1))}</td><td class="sig">${esc(shortName(d.c2))}</td><td class="sig">${esc(shortName(d.r1))}</td><td class="sig">${esc(shortName(d.r2))}</td>${(di===0&&i===0)?`<td rowspan="${total}" class="top"><div class="vt" style="font-size:14px">${esc(auditors.join("\n"))}</div></td>`:""}</tr>`).join(""); }).join("")}</tbody></table>
       ${foot(`مراقب اللجان: <span class="who">${esc(S.general.deputy)}</span>`)}</div>`; }).join(""); },
 
   observers(o){ const ses=selectedSessions(o).filter(s=>s.rows.some(r=>norm(r.com))); if(!ses.length) return "";
@@ -882,20 +887,20 @@ const RENDER = {
         ${foot(`مراقب اللجان: <span class="who">${esc(S.general.deputy)}</span>`)}</div>`; }).join(""); },
 
   handover(o){ const ses=selectedSessions(o).filter(s=>s.rows.some(r=>norm(r.com)||norm(r.subject))); if(!ses.length) return "";
-    const V=t=>`<div class="vt">${t}</div>`;
+    const V=(t,w)=>{ if(!w) return `<div class="vt">${t}</div>`; const k=String(t).split("\n").length; const px=w/100*277*3.78-10; const fs=Math.max(8,Math.min(12.5,px/(k*1.5))); return `<div class="vt" style="font-size:${fs.toFixed(1)}px;line-height:1.45">${t}</div>`; };
     return ses.map(s=>{ const cm=new Map(); s.rows.filter(r=>norm(r.com)).forEach(r=>{ const k=norm(r.com); if(!cm.has(k)) cm.set(k,{com:k,obs:[]}); [r.o1,r.o2].map(norm).filter(Boolean).forEach(n=>{ if(!cm.get(k).obs.includes(n)) cm.get(k).obs.push(n); }); });
       const coms=[...cm.values()].sort((a,b)=>cmpOrd(a.com,b.com)); const list=coms.length?coms:[{com:"",obs:[]}]; const n=list.length;
       const ex=[]; const seen=new Set(); s.rows.filter(r=>norm(r.subject)).sort((a,b)=>rankGrade(a.grade)-rankGrade(b.grade)).forEach(r=>{ const k=norm(r.grade)+"|"+norm(r.subject); if(!seen.has(k)){seen.add(k);ex.push(r);} });
-      const names=ks=>esc(uniq(s.rows.flatMap(r=>ks.map(k=>r[k]))).join("     "));
+      const names=ks=>esc(uniq(s.rows.flatMap(r=>ks.map(k=>shortName(r[k])))).join("\n"));
       const ctrl=names(["ctrl"]), corr=names(["c1","c2"]), rev=names(["r1","r2"]), mon=names(["mon"]), aud=names(["aud"]), fin=names(["aud2"]);
       const h=Math.max(14,Math.min(42,128/n));
       return `<div class="sheet land">${head()}
         <table class="flow"><colgroup><col style="width:6%"><col style="width:5.5%"><col style="width:5.5%"><col style="width:6%"><col style="width:8%"><col style="width:5%"><col style="width:7%"><col style="width:7%"><col style="width:7%"><col style="width:7%"><col style="width:6%"><col style="width:6%"><col style="width:7%"><col style="width:7%"><col style="width:8%"></colgroup>
-        <thead><tr class="grp"><th colspan="6"><div class="per">الفترة : ( ${esc(s.period)} )</div></th><th colspan="3"><div>لجنة التصحيح والمراجعة</div></th><th colspan="3"><div>لجنة الرصد وإخراج النتائج</div></th><th colspan="2"><div>لجنة التصحيح والمراجعة</div></th><th><div class="sm">لجنة التحكم والضبط</div></th></tr>
+        <thead><tr class="grp"><th colspan="3"><div class="per">سير ورقة الإجابة</div></th><th colspan="3"><div class="per">الفترة : ( ${esc(s.period)} )</div></th><th colspan="3"><div>لجنة التصحيح والمراجعة</div></th><th colspan="3"><div>لجنة الرصد وإخراج النتائج</div></th><th colspan="2"><div>لجنة التصحيح والمراجعة</div></th><th><div class="sm">لجنة التحكم والضبط</div></th></tr>
         <tr class="hd"><th>اليوم والتاريخ</th><th>المواد</th><th>الصفوف</th><th>اللجان</th><th>ملاحظ اللجنة</th><th>عدد الأوراق</th><th>الاستلام من لجنة التحكم والضبط</th><th>تصحيح</th><th>تدقيق</th><th>الاستلام من لجنة التحكم والضبط</th><th>رصد في نور</th><th>طباعة الكشف</th><th>الاستلام من لجنة التصحيح والمراجعة</th><th>مطابقة الكشف مع أوراق الإجابة</th><th>الاستلام النهائي والحفظ</th></tr></thead>
         <tbody>${list.map((c,i)=>`<tr style="height:${h}mm">${i===0?`<td rowspan="${n}" class="shade">${V(`${esc(s.day)}  -  الموافق : ${ar(s.date)}`)}</td><td rowspan="${n}" class="shade">${V(esc(ex.map(r=>r.subject).join("  -  ")))}</td><td rowspan="${n}" class="shade">${V(esc(uniq(ex.map(r=>r.grade)).join("  -  ")))}</td>`:""}
-          <td class="shade b">${esc(c.com)}</td><td class="shade obs">${c.obs.map(esc).join("<br>")}</td><td class="shade b">${c.com?ar(studentsOf(c.com).length):""}</td>
-          ${i===0?`<td rowspan="${n}">${V(ctrl)}</td><td rowspan="${n}">${V(corr)}</td><td rowspan="${n}">${V(rev)}</td><td rowspan="${n}">${V(mon)}</td><td rowspan="${n}"></td><td rowspan="${n}"></td><td rowspan="${n}">${V(mon)}</td><td rowspan="${n}">${V(aud)}</td><td rowspan="${n}">${V(fin)}</td>`:""}</tr>`).join("")}</tbody></table>
+          <td class="shade b">${esc(c.com)}</td><td class="shade obs">${c.obs.map(x=>esc(shortName(x))).join("<br>")}</td><td class="shade b">${c.com?ar(studentsOf(c.com).length):""}</td>
+          ${i===0?[[ctrl,7],[corr,7],[rev,7],[mon,7],["",6],["",6],[mon,7],[aud,7],[fin,8]].map(([t,w])=>`<td rowspan="${n}" class="top">${t?V(t,w):""}</td>`).join(""):""}</tr>`).join("")}</tbody></table>
         ${foot(`مراقب اللجان : <span class="who">${esc(S.general.deputy)}</span>`)}</div>`; }).join(""); },
 
   envelope(o){ const out=[]; selectedSessions(o).forEach(s=>{ const seen=new Set(); s.rows.filter(r=>norm(r.subject)).sort((a,b)=>rankGrade(a.grade)-rankGrade(b.grade)).forEach(r=>{ const k=norm(r.grade)+"|"+norm(r.subject); if(!seen.has(k)){ seen.add(k); out.push({s,r}); } }); });
@@ -904,9 +909,9 @@ const RENDER = {
       const members=[[g.deputy,"وكيل المدرسة","رئيسًا"],[ctrl,"عضو لجنة التحكم والضبط","عضوًا"],["","معلم","عضوًا"],["","معلم","عضوًا"]];
       return `<div class="sheet">${head()}
       <div class="formbar"><div class="lbl">اسم النموذج</div><div class="nm">محضر فتح مظروف أسئلة</div><div class="lbl">رقم النموذج</div><div class="no">${ar(28)}</div></div>
-      <table class="pt big"><colgroup><col style="width:18%"><col style="width:20%"><col style="width:17%"><col style="width:22%"><col style="width:23%"></colgroup>
+      <table class="pt big"><colgroup><col style="width:13%"><col style="width:18%"><col style="width:12%"><col style="width:23%"><col style="width:34%"></colgroup>
         <thead><tr><th>اليوم</th><th>التاريخ</th><th>الفترة</th><th>المادة</th><th>الصف / المستوى</th></tr></thead>
-        <tbody><tr><td>${esc(s.day)}</td><td>${ar(s.date)}</td><td>${esc(s.period)}</td><td><b>${esc(r.subject)}</b></td><td>${esc(r.grade)}</td></tr>
+        <tbody><tr><td>${esc(s.day)}</td><td>${ar(s.date)}</td><td>${esc(s.period)}</td><td><b>${esc(r.subject)}</b></td><td style="white-space:nowrap;font-size:14px">${esc(r.grade)}</td></tr>
         <tr><td colspan="5" class="stmt">تم فتح مظروف الأسئلة عند الساعة (&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;) ووجد: &nbsp; ☐ سليم &nbsp;&nbsp; ☐ غير سليم &nbsp; وتم تحرير محضر بذلك.</td></tr>
         <tr><td colspan="5" class="sec">أعضاء اللجنة</td></tr></tbody></table>
       <table class="pt big" style="margin-top:-1px"><colgroup><col style="width:8%"><col style="width:34%"><col style="width:24%"><col style="width:14%"><col style="width:20%"></colgroup>
@@ -959,6 +964,8 @@ function bindViol(o,draw){
   $("#v-desc").oninput=e=>{o.desc=e.target.value;draw();};
   $("#v-rec").oninput=e=>{o.rec=e.target.value;draw();};
 }
+/* اختصار الاسم إلى الاسم الأول والثاني (مع ضم «عبد» و«أبو» لما بعدها) */
+function shortName(n){ const w=norm(n).split(" ").filter(Boolean); const t=[]; for(let i=0;i<w.length;i++){ if(/^(عبد|ابو|أبو)$/.test(w[i])&&w[i+1]){ t.push(w[i]+" "+w[i+1]); i++; } else t.push(w[i]); } return t.slice(0,2).join(" "); }
 function rankGrade(g){ const s=norm(g); const m=["الأول","الثاني","الثالث"].findIndex(x=>s.startsWith(x)); if(m>=0) return m; const n=parseInt(latin(s)); return isNaN(n)?50:n; }
 
 /* ======================= بيانات تجريبية ======================= */
