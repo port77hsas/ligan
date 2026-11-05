@@ -110,7 +110,7 @@ main{max-width:1180px;margin:0 auto;padding:20px max(16px,env(safe-area-inset-ri
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;min-height:20px}
 .chip{display:inline-flex;align-items:center;gap:6px;background:var(--teal-soft);border-radius:999px;padding:4px 6px 4px 12px;font-size:15px}
 .chip button{border:0;background:transparent;width:28px;height:28px;border-radius:50%;color:var(--muted);font-size:18px;line-height:1}
-.addrow{display:flex;gap:8px}
+.addrow{display:flex;flex-direction:row!important;gap:8px}
 .addrow input{flex:1;min-width:0}
 
 .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
@@ -158,9 +158,10 @@ table.data td.acts{text-align:end;white-space:nowrap}
   font-family:var(--f-ui);font-size:12px;line-height:1.45;display:flex;flex-direction:column}
 .sheet.land{width:297mm;height:210mm}
 .sheet *{color:inherit}
-.p-head{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;border:1.5px solid #0e5a57;border-radius:10px;padding:6px 14px;margin-bottom:8px}
-.p-head .r{font-weight:700;font-size:12.5px;line-height:1.5}
-.p-head .l{text-align:left;font-weight:700;font-size:12.5px;color:#0e5a57;line-height:1.5}
+.p-head{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;border:1.5px solid #0e5a57;border-radius:10px;padding:6px 14px;margin-bottom:8px;background:#fff;width:100%;box-sizing:border-box}
+.sheet-in{display:flex;flex-direction:column;flex:1 1 auto;min-height:0;transform-origin:top right}
+.p-head .r{text-align:center;font-weight:700;font-size:12.5px;line-height:1.5}
+.p-head .l{text-align:center;font-weight:700;font-size:12.5px;color:#0e5a57;line-height:1.5}
 .p-head .c{text-align:center}
 .p-head .c img{max-height:56px;max-width:140px}
 .emblem{font-family:var(--f-display);color:#0e5a57;font-size:17px;line-height:1.1}
@@ -173,6 +174,7 @@ table.pt th{background:#0e5a57;color:#fff!important;font-weight:700;padding:4px 
 table.pt td{border:1px solid #9bb3b0;padding:3px 4px;text-align:center;font-size:11.5px;vertical-align:middle;overflow-wrap:anywhere}
 table.pt tr:nth-child(even) td{background:#f4f8f7}
 table.pt td.name{text-align:right;font-weight:600}
+table.pt.dense td{padding:1px 3px;font-size:10.5px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .p-foot{margin-top:auto;display:flex;justify-content:space-between;gap:20px;border-top:1.5px solid #0e5a57;padding-top:6px;font-weight:700;font-size:13px}
 .p-foot .who{color:#0e5a57}
 .sign-lines{display:flex;flex-direction:column;gap:6px;margin-top:8px;font-weight:600}
@@ -183,7 +185,7 @@ table.pt td.name{text-align:right;font-weight:600}
 .cover .frame::before{content:"";position:absolute;inset:4px;border:1px solid #b8892f;border-radius:12px}
 .cover .band{position:absolute;top:0;left:0;width:70mm;height:70mm;background:#0e5a57;clip-path:polygon(0 0,100% 0,0 100%)}
 .cover .band2{position:absolute;bottom:0;right:0;width:90mm;height:60mm;background:#0e5a57;opacity:.12;clip-path:polygon(100% 0,100% 100%,0 100%)}
-.cover .inner{position:relative;height:100%;display:flex;flex-direction:column;align-items:center;padding:24mm 22mm 22mm;text-align:center;gap:8mm}
+.cover .inner{position:relative;height:100%;display:flex;flex-direction:column;align-items:center;padding:14mm 16mm 22mm;text-align:center;gap:8mm}
 .cover .logo img{max-height:80px;max-width:200px}
 .cover .logo .emblem{font-size:30px}
 .cover .logo .emblem small{font-size:12px}
@@ -199,7 +201,7 @@ table.pt td.name{text-align:right;font-weight:600}
 .cover .sig div span{display:block;color:#0e5a57;font-size:13px}
 
 /* بطاقات الجلوس */
-.cards{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(5,1fr);gap:6mm;height:100%}
+.cards{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(5,1fr);gap:4mm;flex:1;min-height:0}
 .scard{border:1.6px solid #222;border-radius:4px;padding:4mm 5mm;display:flex;flex-direction:column;justify-content:space-between;font-weight:700;font-size:12.5px;position:relative}
 .scard .hdr{border-bottom:1px solid #0e5a57;padding-bottom:2mm;font-size:11.5px}
 .scard .nm{font-size:14px}
@@ -310,8 +312,10 @@ const LOCS=["1ث1","1ث2","2ث1","2ث2","3ث1","3ث2"];
 function teacherOpts(){ return uniq([...S.teachers,...S.control]); }
 GENERAL_FIELDS.forEach((f,i)=>f.col=i);
 
+const DEFAULT_INS=["الحضور قبل الاختبار بوقت كافٍ مع إحضار الهوية المدرسية، والالتزام بالهدوء داخل القاعة والتقيد بالتعليمات.","الإجابة بالقلم الأزرق الجاف غير القابل للمحو، ويُمنع اصطحاب المقررات الدراسية أو ما له علاقة بالمادة.","يُمنع منعًا باتًا دخول أجهزة الجوال وغيرها إلى قاعة الاختبار.","التأكيد على أولياء الأمور بالالتزام بالحضور مع بداية الوقت المخصص لانصراف الطلاب."].join("\n");
 function blank(){ return {general:{year:"",term:"",school:"",principal:"",deputy:"",counselor:""},teachers:[],control:[],students:[],dist:[],
-  settings:{region:"منطقة عسير",track:"",logo:""}}; }
+  settings:{region:"منطقة عسير",track:"",logo:"",instructions:DEFAULT_INS}}; }
+
 let S = blank();
 function load(){ try{ const raw = localStorage.getItem(STORE_KEY); if(raw){ const d=JSON.parse(raw); S = Object.assign(blank(), d); S.settings = Object.assign(blank().settings, d.settings||{}); S.general=Object.assign(blank().general,d.general||{}); } }catch(e){} }
 let saveTimer;
@@ -360,7 +364,7 @@ const REPORTS = [
   {id:"load",t:"عدد اللجان لكل معلم",d:"جدول ورسم بياني لتوزيع الملاحظة",o:"أفقي"},
   {id:"marking",t:"التصحيح والمراجعة",d:"المصححون والمراجعون والمدقق لكل مادة",o:"أفقي"},
   {id:"observers",t:"بيان الملاحظين",d:"ملاحظو اللجان والاحتياط لكل فترة",o:"أفقي"},
-  {id:"handover",t:"استلام وتسليم الأوراق",d:"مسار ورقة الإجابة من اللجنة إلى الحفظ",o:"أفقي"},
+  {id:"handover",t:"سير ورقة الإجابة",d:"مسار ورقة الإجابة من اللجنة إلى الحفظ",o:"أفقي"},
 ];
 let reportOpts = {};
 function go(h){ location.hash = h; }
@@ -454,11 +458,13 @@ function viewGeneral(){
       <div class="fld"><label for="s-region">الإدارة العامة للتعليم بـ</label><input id="s-region" value="${esc(S.settings.region)}"></div>
       <div class="fld"><label for="s-track">المسار</label><input id="s-track" value="${esc(S.settings.track)}" placeholder="مسارات / المسار العام"></div>
     </div>
-    <p class="hint">هذه الإعدادات تظهر في رأس التقارير فقط ولا تُكتب في ملف Excel.</p>
+    <div class="fld" style="margin-top:14px"><label for="s-ins">تعليمات هامة للطلاب (تظهر أسفل جدول الاختبارات) — اكتب كل تعليمة في سطر</label><textarea id="s-ins" style="min-height:150px">${esc(S.settings.instructions)}</textarea></div>
+    <p class="hint">هذه الإعدادات تظهر في التقارير فقط وتُحفظ على الجهاز، ولا تُكتب في ملف Excel.</p>
   </div>`;
   GENERAL_FIELDS.forEach(f=>$("#g-"+f.k).oninput=e=>{S.general[f.k]=e.target.value;save();});
   $("#s-region").oninput=e=>{S.settings.region=e.target.value;save();};
   $("#s-track").oninput=e=>{S.settings.track=e.target.value;save();};
+  $("#s-ins").oninput=e=>{S.settings.instructions=e.target.value;save();};
   const chips=(key,box)=>{ $(box).innerHTML = S[key].length? S[key].map((n,i)=>`<span class="chip">${esc(n)}<button aria-label="حذف ${esc(n)}" data-i="${i}">×</button></span>`).join("") : `<span class="hint" style="margin:0">لا توجد أسماء بعد.</span>`;
     $(box).querySelectorAll("button").forEach(b=>b.onclick=()=>{S[key].splice(+b.dataset.i,1);save();chips(key,box);}); };
   const adder=(key,inp,btn,box)=>{ const add=()=>{ const names=$(inp).value.split(/\n|،|,/).map(norm).filter(Boolean); names.forEach(n=>{ if(!S[key].includes(n)) S[key].push(n); }); $(inp).value=""; save(); chips(key,box); };
@@ -655,12 +661,21 @@ function viewReport(id){
   $("#b-print").onclick=()=>window.print();
   if($("#o-ses")) $("#o-ses").onchange=e=>{o.ses=e.target.value;draw();};
   if($("#o-com")) $("#o-com").onchange=e=>{o.com=e.target.value;draw();};
-  const draw=()=>{ const html=RENDER[id](o); $("#paper").innerHTML = html || `<div class="panel empty"><b>لا توجد بيانات كافية لهذا التقرير</b>${REPORT_NEEDS[id]}</div>`; fitPaper(); };
+  const draw=()=>{ const html=RENDER[id](o); $("#paper").innerHTML = html || `<div class="panel empty"><b>لا توجد بيانات كافية لهذا التقرير</b>${REPORT_NEEDS[id]}</div>`; fitSheets(); fitPaper(); };
   draw();
 }
 const REPORT_NEEDS={cover:"أدخل الطلاب مع لجانهم في «بيانات الطلاب».",roll:"أدخل الطلاب مع لجانهم في «بيانات الطلاب».",cards:"أدخل الطلاب في «بيانات الطلاب».",
   schedule:"أدخل اليوم والتاريخ والفترة والصف والمادة في «بيانات التوزيع».",load:"أدخل أسماء المعلمين، والملاحظين في «بيانات التوزيع».",
   marking:"أدخل المادة والمصححين والمراجعين في «بيانات التوزيع».",observers:"أدخل اللجان والملاحظين في «بيانات التوزيع».",handover:"أدخل اللجان والملاحظين وفريق الكنترول في «بيانات التوزيع»."};
+/* تصغير محتوى الورقة تلقائيًا ليظهر كل تقرير في صفحة واحدة */
+function fitSheets(){ document.querySelectorAll("#paper .sheet").forEach(sh=>{
+  if(sh.classList.contains("cover")) return;
+  let inn=sh.querySelector(":scope > .sheet-in");
+  if(!inn){ inn=document.createElement("div"); inn.className="sheet-in"; while(sh.firstChild) inn.appendChild(sh.firstChild); sh.appendChild(inn); }
+  inn.style.zoom=""; inn.style.height=""; inn.style.width=""; inn.style.flex="";
+  const cs=getComputedStyle(sh); const aH=sh.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom), aW=sh.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
+  const need=inn.scrollHeight; if(need>aH+1){ const r=aH/need; inn.style.flex="none"; inn.style.zoom=r; inn.style.height=(aH/r)+"px"; inn.style.width=(aW/r)+"px"; }
+}); }
 function fitPaper(){ const wrap=$("#paper"); const sheets=wrap.querySelectorAll(".sheet"); if(!sheets.length) return;
   sheets.forEach(s=>{ s.style.zoom=""; }); const avail=wrap.clientWidth; const w=sheets[0].offsetWidth;
   if(w>avail){ const z=(avail-4)/w; sheets.forEach(s=>s.style.zoom=z); } }
@@ -680,8 +695,7 @@ const comsFilter=o=> committees().filter(c=>!o.com||c===o.com);
 const RENDER = {
   cover(o){ const g=S.general; const cs=comsFilter(o); if(!cs.length) return "";
     return cs.map(c=>`<div class="sheet cover"><div class="band"></div><div class="band2"></div><div class="frame"></div>
-      <div class="inner"><div class="logo">${emblem()}</div>
-        <div class="dir">الإدارة العامة للتعليم ب${esc(S.settings.region)}</div>
+      <div class="inner">${head()}
         <div class="sch">${esc(g.school)}${S.settings.track?` <span style="font-size:18px;color:#555">· ${esc(S.settings.track)}</span>`:""}</div>
         <div class="big"><div>لجان الاختبار</div></div>
         <div class="info">
@@ -696,21 +710,21 @@ const RENDER = {
     return cs.map(c=>{ const st=studentsOf(c); if(!st.length) return "";
       const rows=ses? ses.rows.filter(r=>norm(r.com)===norm(c)) : []; const subj=ses? uniq((rows.length?rows:ses.rows).map(r=>r.subject)).join(" / ") : "";
       const obs=uniq(rows.flatMap(r=>[r.o1,r.o2]));
-      const pages=chunk(st,24);
+      const pages=[st]; const rh=Math.max(5.2,Math.min(8.4,185/(st.length+2)));
       return pages.map((p,pi)=>`<div class="sheet">${head()}
         <div class="p-title">كشف استلام ورقة الإجابة (كشف مناداة) — اللجنة ${esc(c)}</div>
         <div class="p-meta"><span>اليوم: <span class="v">${ses?esc(ses.day)+" "+ar(ses.date):"................"}</span></span><span>الفترة: <span class="v">${ses?esc(ses.period):"..........."}</span></span><span>المادة: <span class="v">${subj?esc(subj):".............................."}</span></span><span>المقر: <span class="v">${ar(locationOf(c))}</span></span></div>
-        <table class="pt"><colgroup><col style="width:5%"><col style="width:13%"><col style="width:27%"><col style="width:7%"><col style="width:9%"><col style="width:11%"><col style="width:8%"><col style="width:8%"><col style="width:12%"></colgroup>
+        <table class="pt ${st.length>24?"dense":""}"><colgroup><col style="width:5%"><col style="width:13%"><col style="width:27%"><col style="width:7%"><col style="width:9%"><col style="width:11%"><col style="width:8%"><col style="width:8%"><col style="width:12%"></colgroup>
         <thead><tr><th>م</th><th>رقم الهوية</th><th>اسم الطالب</th><th>رقم الجلوس</th><th>الصف</th><th>القسم</th><th>اللجنة</th><th>زمن الخروج</th><th>التوقيع</th></tr></thead>
-        <tbody>${p.map((s,i)=>`<tr style="height:8.4mm"><td>${ar(pi*24+i+1)}</td><td>${ar(s.id)}</td><td class="name">${esc(s.name)}</td><td><b>${ar(s.seat)}</b></td><td>${ar(s.grade)}</td><td>${esc(s.section)}</td><td>${esc(s.committee)}</td><td></td><td></td></tr>`).join("")}
-        ${pi===pages.length-1? Array(Math.max(0,Math.min(3,24-p.length))).fill(`<tr style="height:8.4mm"><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`).join(""):""}</tbody></table>
+        <tbody>${p.map((s,i)=>`<tr style="height:${rh}mm"><td>${ar(i+1)}</td><td>${ar(s.id)}</td><td class="name">${esc(s.name)}</td><td><b>${ar(s.seat)}</b></td><td>${ar(s.grade)}</td><td>${esc(s.section)}</td><td>${esc(s.committee)}</td><td></td><td></td></tr>`).join("")}
+        ${pi===pages.length-1? Array(Math.max(0,Math.min(2,24-p.length))).fill(`<tr style="height:${rh}mm"><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`).join(""):""}</tbody></table>
         <div class="sign-lines"><div>١- الملاحظ: ${obs[0]?esc(obs[0]):"............................................"} &nbsp;&nbsp; التوقيع: .........................</div>
         <div>٢- الملاحظ: ${obs[1]?esc(obs[1]):"............................................"} &nbsp;&nbsp; التوقيع: .........................</div></div>
         ${foot(`عدد الطلاب: <span class="who">${ar(st.length)}</span> · الحاضرون: ........ · الغائبون: ........`)}</div>`).join("");
     }).join(""); },
 
   cards(o){ const g=S.general; const st=[...S.students].filter(s=>!o.com||norm(s.committee)===norm(o.com)).sort((a,b)=>cmpOrd(a.committee,b.committee)||(parseFloat(latin(a.seat))||0)-(parseFloat(latin(b.seat))||0)); if(!st.length) return "";
-    return chunk(st,10).map(p=>`<div class="sheet"><div class="cards">${p.map(s=>`<div class="scard">
+    return chunk(st,10).map(p=>`<div class="sheet">${head()}<div class="p-title">بطاقات الجلوس</div><div class="cards">${p.map(s=>`<div class="scard">
       <div class="hdr">العام الدراسي: ${ar(g.year)} &nbsp; ${g.term?("الفصل الدراسي "+esc(g.term)):""}</div>
       <div class="seat"><small>رقم الجلوس</small><b>${ar(s.seat)}</b></div>
       <div class="nm">${esc(s.name)}</div>
@@ -731,11 +745,7 @@ const RENDER = {
       <table class="pt"><colgroup><col style="width:9%"><col style="width:12%"><col style="width:7%">${grades.map(()=>`<col style="width:${wGrade*0.45}%"><col style="width:${wGrade*0.55}%">`).join("")}</colgroup>
       <thead><tr><th rowspan="2">اليوم</th><th rowspan="2">التاريخ</th><th rowspan="2">الفترة</th>${grades.map(gr=>`<th colspan="2" style="background:#b8892f;border-color:#b8892f">${esc(gr)}</th>`).join("")}</tr>
       <tr>${grades.map(()=>`<th>الزمن</th><th>المادة</th>`).join("")}</tr></thead><tbody>${body}</tbody></table>
-      <div class="notes"><b>تعليمات هامة للطلاب:</b><ul>
-        <li>الحضور قبل الاختبار بوقت كافٍ مع إحضار الهوية المدرسية، والالتزام بالهدوء داخل القاعة والتقيد بالتعليمات.</li>
-        <li>الإجابة بالقلم الأزرق الجاف غير القابل للمحو، ويُمنع اصطحاب المقررات الدراسية أو ما له علاقة بالمادة.</li>
-        <li>يُمنع منعًا باتًا دخول أجهزة الجوال وغيرها إلى قاعة الاختبار.</li>
-        <li>التأكيد على أولياء الأمور بالالتزام بالحضور مع بداية الوقت المخصص لانصراف الطلاب.</li></ul></div>
+      ${(()=>{ const ins=String(S.settings.instructions||"").split(/\r?\n/).map(norm).filter(Boolean); return ins.length?`<div class="notes"><b>تعليمات هامة للطلاب:</b><ul>${ins.map(t=>`<li>${ar(t)}</li>`).join("")}</ul></div>`:""; })()}
       ${foot()}</div>`; },
 
   load(){ const counts=new Map(); const reserve=new Map(); const ctrl=new Set(S.control.map(norm));
@@ -770,12 +780,12 @@ const RENDER = {
     const items=[...map.values()].sort((a,b)=>a.dk-b.dk||rankGrade(a.d.grade)-rankGrade(b.d.grade));
     const days=new Map(); items.forEach(it=>{ const k=norm(it.d.day)+"|"+norm(it.d.date); if(!days.has(k)) days.set(k,[]); days.get(k).push(it.d); });
     const auditors=uniq(items.map(x=>x.d.aud));
-    const pages=[]; let cur=[],n=0; days.forEach((v,k)=>{ if(n+v.length>16&&cur.length){pages.push(cur);cur=[];n=0;} cur.push([k,v]); n+=v.length; }); if(cur.length) pages.push(cur);
+    const pages=[]; let cur=[],n=0; days.forEach((v,k)=>{ if(false){pages.push(cur);cur=[];n=0;} cur.push([k,v]); n+=v.length; }); if(cur.length) pages.push(cur);
     return pages.map((pg,pi)=>{ const total=pg.reduce((a,[,v])=>a+v.length,0);
       return `<div class="sheet land">${head()}<div class="p-title">التصحيح والمراجعة والتدقيق</div>
       <table class="pt"><colgroup><col style="width:8%"><col style="width:10%"><col style="width:10%"><col style="width:11%"><col style="width:13%"><col style="width:13%"><col style="width:13%"><col style="width:13%"><col style="width:9%"></colgroup>
       <thead><tr><th>اليوم</th><th>التاريخ</th><th>الصف</th><th>المادة</th><th>المصحح ١</th><th>المصحح ٢</th><th>المراجع ١</th><th>المراجع ٢</th><th>التدقيق</th></tr></thead>
-      <tbody>${pg.map(([k,v],di)=>{ const [day,date]=k.split("|"); return v.map((d,i)=>`<tr style="height:${Math.min(13,118/total)}mm">${i===0?`<td rowspan="${v.length}" style="font-weight:700;font-size:13px">${esc(day)}</td><td rowspan="${v.length}" style="font-weight:700">${ar(date)}</td>`:""}<td>${esc(d.grade)}</td><td style="font-weight:700">${esc(d.subject)}</td><td>${esc(d.c1)}</td><td>${esc(d.c2)}</td><td>${esc(d.r1)}</td><td>${esc(d.r2)}</td>${(di===0&&i===0)?`<td rowspan="${total}" style="writing-mode:vertical-rl;font-weight:700;font-size:13px">${esc(auditors.join(" — "))}</td>`:""}</tr>`).join(""); }).join("")}</tbody></table>
+      <tbody>${pg.map(([k,v],di)=>{ const [day,date]=k.split("|"); return v.map((d,i)=>`<tr style="height:${Math.max(5,Math.min(13,118/total))}mm">${i===0?`<td rowspan="${v.length}" style="font-weight:700;font-size:13px">${esc(day)}</td><td rowspan="${v.length}" style="font-weight:700">${ar(date)}</td>`:""}<td>${esc(d.grade)}</td><td style="font-weight:700">${esc(d.subject)}</td><td>${esc(d.c1)}</td><td>${esc(d.c2)}</td><td>${esc(d.r1)}</td><td>${esc(d.r2)}</td>${(di===0&&i===0)?`<td rowspan="${total}" style="writing-mode:vertical-rl;font-weight:700;font-size:13px">${esc(auditors.join(" — "))}</td>`:""}</tr>`).join(""); }).join("")}</tbody></table>
       ${foot(`مراقب اللجان: <span class="who">${esc(S.general.deputy)}</span>`)}</div>`; }).join(""); },
 
   observers(o){ const ses=selectedSessions(o).filter(s=>s.rows.some(r=>norm(r.com))); if(!ses.length) return "";
@@ -783,7 +793,8 @@ const RENDER = {
       const list=[...cm.values()].sort((a,b)=>cmpOrd(a.com,b.com)); const res=uniq(s.rows.flatMap(r=>[r.s1,r.s2]));
       const nRows=list.reduce((a,c)=>a+Math.max(2,c.obs.length),0); const h=Math.max(5.5,Math.min(12,100/nRows));
       return `<div class="sheet land">${head()}
-        <div class="p-meta" style="font-size:15px;align-items:center"><span class="p-title" style="margin:0;padding:3px 20px">بيان بأسماء الملاحظين</span><span>ليوم: <span class="v">${esc(s.day)}</span></span><span>الموافق: <span class="v">${ar(s.date)}</span></span><span>الفترة: <span class="v">${esc(s.period)}</span></span></div>
+        <div class="p-title">بيان بأسماء الملاحظين</div>
+        <div class="p-meta"><span>اليوم: <span class="v">${esc(s.day)}</span></span><span>التاريخ: <span class="v">${ar(s.date)}</span></span><span>الفترة: <span class="v">${esc(s.period)}</span></span></div>
         <table class="pt"><colgroup><col style="width:14%"><col style="width:22%"><col style="width:36%"><col style="width:28%"></colgroup>
         <thead><tr><th>اللجنة</th><th>مقر اللجنة</th><th>اسم الملاحظ</th><th>التوقيع</th></tr></thead>
         <tbody>${list.map(c=>{ const ob=c.obs.length?c.obs:["",""]; if(ob.length<2) ob.push(""); return ob.map((n,i)=>`<tr style="height:${h}mm">${i===0?`<td rowspan="${ob.length}" style="font-weight:700;font-size:14px">${esc(c.com)}</td><td rowspan="${ob.length}" style="font-weight:700">${ar(c.loc)}</td>`:""}<td style="font-weight:700">${esc(n)}</td><td></td></tr>`).join(""); }).join("")}</tbody></table>
@@ -800,7 +811,8 @@ const RENDER = {
       const ctrl=pick(["ctrl"]), corr=pick(["c1","c2"]), rev=pick(["r1","r2"]), aud=pick(["aud"]), mon=pick(["mon"]), aud2=pick(["aud2"]);
       const h=Math.max(12,Math.min(40,120/n));
       return `<div class="sheet land">${head()}
-        <div class="p-meta" style="font-size:14px;align-items:center"><span class="p-title" style="margin:0;padding:3px 18px">استلام وتسليم أوراق الإجابة</span><span>اليوم: <span class="v">${esc(s.day)} ${ar(s.date)}</span></span><span>الفترة: <span class="v">(${esc(s.period)})</span></span></div>
+        <div class="p-title">سير ورقة الإجابة</div>
+        <div class="p-meta"><span>اليوم: <span class="v">${esc(s.day)}</span></span><span>التاريخ: <span class="v">${ar(s.date)}</span></span><span>الفترة: <span class="v">${esc(s.period)}</span></span></div>
         <table class="pt"><colgroup><col style="width:5.5%"><col style="width:8%"><col style="width:8%"><col style="width:7%"><col style="width:10%"><col style="width:5%"><col style="width:8.5%"><col style="width:8.5%"><col style="width:8%"><col style="width:7.5%"><col style="width:8.5%"><col style="width:7.5%"><col style="width:8%"></colgroup>
         <thead><tr><th>اليوم والتاريخ</th><th>المواد</th><th>الصفوف</th><th>اللجنة</th><th>ملاحظ اللجنة</th><th>عدد الأوراق</th><th>الاستلام من لجنة التحكم والضبط</th><th>التصحيح</th><th>المراجعة</th><th>التدقيق</th><th>الرصد وإخراج النتائج</th><th>مطابقة الكشف مع أوراق الإجابة</th><th>الاستلام النهائي والحفظ</th></tr></thead>
         <tbody>${(coms.length?coms:[{com:"",obs:[]}]).map((c,i)=>`<tr style="height:${h}mm">${i===0?`<td rowspan="${n}">${V(esc(s.day)+" — "+ar(s.date))}</td><td rowspan="${n}">${V(esc(subj.join(" · ")))}</td><td rowspan="${n}">${V(esc(grades.join(" · ")))}</td>`:""}
