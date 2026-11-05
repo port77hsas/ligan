@@ -286,24 +286,28 @@ const DIST_FIELDS = [
   {k:"period",label:"الفترة",list:"dl-periods",g:"الاختبار"},
   {k:"from",label:"من",ph:"7:00 ص",g:"الاختبار"},
   {k:"to",label:"إلى",ph:"9:30 ص",g:"الاختبار"},
-  {k:"grade",label:"الصف",list:"dl-grades",ph:"الأول الثانوي",g:"الاختبار"},
+  {k:"grade",label:"الصف",opts:()=>GRADES,g:"الاختبار"},
   {k:"subject",label:"المادة",list:"dl-subjects",g:"الاختبار"},
-  {k:"c1",label:"المعلم المصحح 1",list:"dl-teachers",g:"التصحيح والمراجعة"},
-  {k:"r1",label:"المعلم المراجع 1",list:"dl-teachers",g:"التصحيح والمراجعة"},
-  {k:"c2",label:"المعلم المصحح 2",list:"dl-teachers",g:"التصحيح والمراجعة"},
-  {k:"r2",label:"المعلم المراجع 2",list:"dl-teachers",g:"التصحيح والمراجعة"},
-  {k:"aud",label:"المعلم المدقق",list:"dl-teachers",g:"التصحيح والمراجعة"},
-  {k:"com",label:"اللجنة",list:"dl-committees",g:"اللجنة والملاحظة"},
-  {k:"loc",label:"مقر اللجنة",ph:"الصف: 1ث1",g:"اللجنة والملاحظة"},
-  {k:"o1",label:"ملاحظ 1",list:"dl-teachers",g:"اللجنة والملاحظة"},
-  {k:"o2",label:"ملاحظ 2",list:"dl-teachers",g:"اللجنة والملاحظة"},
-  {k:"s1",label:"احتياط 1",list:"dl-teachers",g:"اللجنة والملاحظة"},
-  {k:"s2",label:"احتياط 2",list:"dl-teachers",g:"اللجنة والملاحظة"},
-  {k:"ctrl",label:"التحكم والضبط",list:"dl-teachers",g:"الكنترول"},
-  {k:"mon",label:"الرصد واستخراج النتائج",list:"dl-teachers",g:"الكنترول"},
-  {k:"aud2",label:"المدقق",list:"dl-teachers",g:"الكنترول"},
+  {k:"c1",label:"المعلم المصحح 1",opts:teacherOpts,g:"التصحيح والمراجعة"},
+  {k:"r1",label:"المعلم المراجع 1",opts:teacherOpts,g:"التصحيح والمراجعة"},
+  {k:"c2",label:"المعلم المصحح 2",opts:teacherOpts,g:"التصحيح والمراجعة"},
+  {k:"r2",label:"المعلم المراجع 2",opts:teacherOpts,g:"التصحيح والمراجعة"},
+  {k:"aud",label:"المعلم المدقق",opts:teacherOpts,g:"التصحيح والمراجعة"},
+  {k:"com",label:"اللجنة",opts:()=>COMS10,g:"اللجنة والملاحظة"},
+  {k:"loc",label:"مقر اللجنة",opts:()=>LOCS,g:"اللجنة والملاحظة"},
+  {k:"o1",label:"ملاحظ 1",opts:teacherOpts,g:"اللجنة والملاحظة"},
+  {k:"o2",label:"ملاحظ 2",opts:teacherOpts,g:"اللجنة والملاحظة"},
+  {k:"s1",label:"احتياط 1",opts:teacherOpts,g:"اللجنة والملاحظة"},
+  {k:"s2",label:"احتياط 2",opts:teacherOpts,g:"اللجنة والملاحظة"},
+  {k:"ctrl",label:"التحكم والضبط",opts:teacherOpts,g:"الكنترول"},
+  {k:"mon",label:"الرصد واستخراج النتائج",opts:teacherOpts,g:"الكنترول"},
+  {k:"aud2",label:"المدقق",opts:teacherOpts,g:"الكنترول"},
 ];
 DIST_FIELDS.forEach((f,i)=>f.col=14+i);
+const GRADES=["الأول الثانوي (السنة المشتركة)","الثاني الثانوي","الثالث الثانوي"];
+const COMS10=["الأولى","الثانية","الثالثة","الرابعة","الخامسة","السادسة","السابعة","الثامنة","التاسعة","العاشرة"];
+const LOCS=["1ث1","1ث2","2ث1","2ث2","3ث1","3ث2"];
+function teacherOpts(){ return uniq([...S.teachers,...S.control]); }
 GENERAL_FIELDS.forEach((f,i)=>f.col=i);
 
 function blank(){ return {general:{year:"",term:"",school:"",principal:"",deputy:"",counselor:""},teachers:[],control:[],students:[],dist:[],
@@ -564,6 +568,8 @@ function modalShell(html){ const back=document.createElement("div"); back.classN
 function formModal(title, fields, data, onSave, allowAgain, againLabel){
   let lastG=null;
   const body = fields.map(f=>{ let h=""; if(f.g && f.g!==lastG){ h+=(lastG?`</div>`:"")+`<div class="group-title">${f.g}</div><div class="form-grid">`; lastG=f.g; }
+    if(f.opts){ const cur=norm(data[f.k]); const o=f.opts(); const all=cur&&!o.includes(cur)?[...o,cur]:o;
+      return h+`<div class="fld"><label for="f-${f.k}">${f.label}<span class="col">${COL(f.col)}</span></label><select id="f-${f.k}"><option value="">${o.length?"— اختر —":"أضف المعلمين من «بيانات عامة»"}</option>${all.map(v=>`<option value="${esc(v)}" ${v===cur?"selected":""}>${esc(v)}</option>`).join("")}</select></div>`; }
     return h+`<div class="fld" ${f.wide?'style="grid-column:span 2"':""}><label for="f-${f.k}">${f.label}<span class="col">${COL(f.col)}</span></label><input id="f-${f.k}" ${f.type?`type="${f.type}" inputmode="numeric"`:""} ${f.list?`list="${f.list}"`:""} value="${esc(data[f.k]||"")}" placeholder="${esc(f.ph||"")}" autocomplete="off"></div>`; }).join("");
   const back=modalShell(`<h3>${title}</h3><form id="mform">${lastG?body+"</div>":`<div class="form-grid">${body}</div>`}
     <div class="foot"><button type="submit" class="btn primary">حفظ</button>${allowAgain?`<button type="button" class="btn sand" id="m-again">${againLabel||"حفظ وإضافة آخر"}</button>`:""}<button type="button" class="btn" id="m-x">إلغاء</button></div></form>`);
@@ -812,12 +818,12 @@ function loadSample(){
   S.teachers=["أحمد سالم","خالد عبدالله","سعد محمد","فهد علي","ماجد حسن","ناصر يحيى","عبدالرحمن صالح","يوسف إبراهيم","عمر فيصل","بندر سعيد"];
   S.control=["تركي ناصر","وليد حمد"];
   const first=["محمد","عبدالله","فيصل","سلطان","نواف","راكان","مشعل","زياد","حسام","أنس","ياسر","هادي"], last=["العتيبي","الشهري","القحطاني","الغامدي","الزهراني","الدوسري"];
-  const comsL=["الأولى","الثانية","الثالثة"], locs={"الأولى":"الصف: 1ث1","الثانية":"الصف: 2ث1","الثالثة":"الصف: 3ث1"};
+  const comsL=["الأولى","الثانية","الثالثة"], locs={"الأولى":"1ث1","الثانية":"2ث1","الثالثة":"3ث1"};
   let seat=1;
   comsL.forEach((c,ci)=>{ for(let i=0;i<12;i++){ S.students.push({id:String(1150000000+ci*1000+i*37),name:`${first[(i+ci*5)%12]} ${first[(i*7+3)%12]} ${last[(i+ci)%6]}`,seat:String(seat++),grade:`${ci+1}ث - 1`,section:ci===0?"السنة المشتركة":"المسار العام",committee:c}); } });
-  const days=[["الأحد","28-12-1447هـ",[["الأول الثانوي","الرياضيات"],["الثاني الثانوي","الرياضيات"],["الثالث الثانوي","الرياضيات"]]],
-              ["الاثنين","29-12-1447هـ",[["الأول الثانوي","الفيزياء"],["الثاني الثانوي","الكيمياء"],["الثالث الثانوي","الفيزياء"]]],
-              ["الثلاثاء","1-1-1448هـ",[["الأول الثانوي","اللغة الإنجليزية"],["الثاني الثانوي","اللغة الإنجليزية"],["الثالث الثانوي","اللغة الإنجليزية"]]]];
+  const days=[["الأحد","28-12-1447هـ",[["الأول الثانوي (السنة المشتركة)","الرياضيات"],["الثاني الثانوي","الرياضيات"],["الثالث الثانوي","الرياضيات"]]],
+              ["الاثنين","29-12-1447هـ",[["الأول الثانوي (السنة المشتركة)","الفيزياء"],["الثاني الثانوي","الكيمياء"],["الثالث الثانوي","الفيزياء"]]],
+              ["الثلاثاء","1-1-1448هـ",[["الأول الثانوي (السنة المشتركة)","اللغة الإنجليزية"],["الثاني الثانوي","اللغة الإنجليزية"],["الثالث الثانوي","اللغة الإنجليزية"]]]];
   const T=S.teachers; let k=0;
   days.forEach(([day,date,ex],di)=>{ comsL.forEach((c,ci)=>{ const [grade,subject]=ex[ci];
     S.dist.push({day,date,period:"الأولى",from:"7:00 ص",to:"9:30 ص",grade,subject,c1:T[(di+ci)%10],r1:T[(di+ci+3)%10],c2:T[(di+ci+1)%10],r2:T[(di+ci+4)%10],aud:"عمر فيصل",
