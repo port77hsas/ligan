@@ -233,7 +233,8 @@ table.flow td.obs{font-weight:700;font-size:11px;line-height:1.5}
 td.top{vertical-align:top!important;padding-top:2.5mm!important}
 td.top .vt{margin:0 auto}
 table.flow td.obs div{white-space:nowrap;line-height:1.7}
-.vrow{display:flex;justify-content:center;align-items:flex-start;direction:ltr}
+table.flow td.vleft{vertical-align:middle;padding:2mm 1mm 2mm 2mm}
+.vrow{display:flex;justify-content:flex-start;align-items:center;direction:ltr}
 .vcol{display:flex;flex-direction:column;align-items:center;position:relative}
 .vsig{position:absolute;top:0;bottom:0;left:calc(100% + 1.5mm);border-right:1px dotted #9aa8ae}
 .vt1{writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap;font-weight:700;line-height:1.2}
@@ -945,7 +946,7 @@ const RENDER = {
     /* السطر الأول: الأسماء متتالية بالطول ومتباعدة. السطر الثاني بجانبها فارغ للتوقيع تحت كل اسم */
     const VN=(arr,w,Hmm)=>{ if(!arr.length) return ""; const k=arr.length; const gap=7*3.78; const Hpx=Hmm*3.78-12;
       const L=arr.reduce((a,n)=>a+n.length,0); const fs=Math.max(8,Math.min(13.5,(Hpx-(k-1)*gap)/(L*0.56)));
-      return `<div class="vrow"><div class="vcol" style="gap:${gap.toFixed(0)}px">${arr.map(n=>`<span class="vt1" style="font-size:${fs.toFixed(1)}px">${esc(n)}</span>`).join("")}<div class="vsig" style="width:${(fs*1.9).toFixed(1)}px"></div></div></div>`; };
+      return `<div class="vrow"><div class="vcol" style="gap:${gap.toFixed(0)}px">${arr.map(n=>`<span class="vt1" style="font-size:${fs.toFixed(1)}px">${esc(n)}</span>`).join("")}</div></div>`; };
     return ses.map(s=>{ const cm=new Map(); s.rows.filter(r=>norm(r.com)).forEach(r=>{ const k=norm(r.com); if(!cm.has(k)) cm.set(k,{com:k,obs:[]}); [r.o1,r.o2].map(norm).filter(Boolean).forEach(n=>{ if(!cm.get(k).obs.includes(n)) cm.get(k).obs.push(n); }); });
       const coms=[...cm.values()].sort((a,b)=>cmpOrd(a.com,b.com)); const list=coms.length?coms:[{com:"",obs:[]}]; const n=list.length;
       const ex=[]; const seen=new Set(); s.rows.filter(r=>norm(r.subject)).sort((a,b)=>rankGrade(a.grade)-rankGrade(b.grade)).forEach(r=>{ const k=norm(r.grade)+"|"+norm(r.subject); if(!seen.has(k)){seen.add(k);ex.push(r);} });
@@ -958,7 +959,7 @@ const RENDER = {
         <tr class="hd"><th>اليوم والتاريخ</th><th>المواد</th><th>الصفوف</th><th>اللجان</th><th>ملاحظ اللجنة</th><th>عدد الأوراق</th><th>الاستلام من لجنة التحكم والضبط</th><th>تصحيح</th><th>تدقيق</th><th>الاستلام من لجنة التحكم والضبط</th><th>رصد في نور</th><th>طباعة الكشف</th><th>الاستلام من لجنة التصحيح والمراجعة</th><th>مطابقة الكشف مع أوراق الإجابة</th><th>الاستلام النهائي والحفظ</th></tr></thead>
         <tbody>${list.map((c,i)=>`<tr style="height:${h}mm">${i===0?`<td rowspan="${n}" class="shade">${V(`${esc(s.day)}  -  الموافق : ${ar(s.date)}`)}</td><td rowspan="${n}" class="shade">${V(esc(ex.map(r=>r.subject).join("  -  ")))}</td><td rowspan="${n}" class="shade">${V(esc(uniq(ex.map(r=>r.grade)).join("  -  ")))}</td>`:""}
           <td class="shade b">${esc(c.com)}</td><td class="shade obs">${c.obs.map(x=>`<div>${esc(shortName(x))}</div>`).join("")}</td><td class="shade b">${c.com?ar(studentsOf(c.com).length):""}</td>
-          ${i===0?[ctrl,corr,rev,mon,[],[],mon,rev,fin].map(t=>`<td rowspan="${n}" class="top">${VN(t,0,h*n)}</td>`).join(""):""}</tr>`).join("")}</tbody></table>
+          ${i===0?[ctrl,corr,rev,mon,[],[],mon,rev,fin].map(t=>`<td rowspan="${n}" class="vleft">${VN(t,0,h*n)}</td>`).join(""):""}</tr>`).join("")}</tbody></table>
         ${foot(`مراقب اللجان : <span class="who">${esc(S.general.deputy)}</span>`)}</div>`; }).join(""); },
 
   envelope(o){ const out=[]; selectedSessions(o).forEach(s=>{ const seen=new Set(); s.rows.filter(r=>norm(r.subject)).sort((a,b)=>rankGrade(a.grade)-rankGrade(b.grade)).forEach(r=>{ const k=norm(r.grade)+"|"+norm(r.subject); if(!seen.has(k)){ seen.add(k); out.push({s,r}); } }); });
