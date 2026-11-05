@@ -1049,7 +1049,8 @@ const RENDER = {
   violation(o){ const g=S.general; const st=o.stu!==undefined&&o.stu!==""?S.students[+o.stu]:null; const ex=o.ex!==undefined&&o.ex!==""?examList()[+o.ex]:null;
     const obs = (st&&ex)? (ex.s.rows.find(r=>norm(r.com)===norm(st.committee))||{}) : {};
     const box=(label,val,cls)=>`<fieldset class="vf ${cls||""}"><legend>${label}</legend><div>${val||"&nbsp;"}</div></fieldset>`;
-    const opts=(arr,sel)=>`<div class="vopts">${arr.map(t=>`<span class="${(sel||[]).includes(t)?"on":""}">${(sel||[]).includes(t)?"✓":"☐"} ${t}</span>`).join("")}</div>`;
+    /* يظهر المختار فقط بعلامة ✓، وإذا لم يُختر شيء تظهر الخيارات فارغة للتعبئة باليد */
+    const opts=(arr,sel)=>{ const chosen=arr.filter(t=>(sel||[]).includes(t)); return `<div class="vopts">${chosen.length? chosen.map(t=>`<span class="on">✓ ${t}</span>`).join("") : arr.map(t=>`<span>☐ ${t}</span>`).join("")}</div>`; };
     return `<div class="sheet viol">${head()}<div class="p-title">محضر مخالفة أنظمة الاختبارات</div>
       <div class="vgrid g3">${box("اسم الطالب",st?esc(st.name):"","wide")}${box("الصف",st?ar(st.grade):"")}${box("رقم الجلوس",st?ar(st.seat):"")}</div>
       <div class="vgrid g4">${box("المادة",ex?esc(ex.r.subject):"")}${box("رقم اللجنة",st?esc(st.committee):"")}${box("الفترة",ex?esc(ex.s.period):"")}${box("تاريخ الاختبار",ex?ar(ex.s.date):"")}</div>
