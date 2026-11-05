@@ -1022,7 +1022,7 @@ const RENDER = {
         <tr class="hd"><th>اليوم والتاريخ</th><th>المواد</th><th>الصفوف</th><th>اللجان</th><th>ملاحظ اللجنة</th><th>عدد الأوراق</th><th>الاستلام من لجنة التحكم والضبط</th><th>تصحيح</th><th>تدقيق</th><th>الاستلام من لجنة التحكم والضبط</th><th>رصد في نور</th><th>طباعة الكشف</th><th>الاستلام من لجنة التصحيح والمراجعة</th><th>مطابقة الكشف مع أوراق الإجابة</th><th>الاستلام النهائي والحفظ</th></tr></thead>
         <tbody>${list.map((c,i)=>`<tr style="height:${h}mm">${i===0?`<td rowspan="${n}" class="shade">${V(`${esc(s.day)}  -  الموافق : ${ar(s.date)}`)}</td><td rowspan="${n}" class="shade">${V(esc(ex.map(r=>r.subject).join("  -  ")))}</td><td rowspan="${n}" class="shade">${V(esc(uniq(ex.map(r=>r.grade)).join("  -  ")))}</td>`:""}
           <td class="shade b">${esc(c.com)}</td><td class="shade obs">${c.obs.map(x=>`<div>${esc(shortName(x))}</div>`).join("")}</td><td class="shade b">${c.com?ar(studentsOf(c.com).length):""}</td>
-          ${i===0?[ctrl,corr,rev,mon,[],[],mon,rev,fin].map(t=>`<td rowspan="${n}" class="vleft">${VN(t,0,h*n)}</td>`).join(""):""}</tr>`).join("")}</tbody></table>
+          ${i===0?[ctrl,corr,rev,mon,[],[],corr,rev,fin].map(t=>`<td rowspan="${n}" class="vleft">${VN(t,0,h*n)}</td>`).join(""):""}</tr>`).join("")}</tbody></table>
         ${foot(`مراقب اللجان : <span class="who">${esc(S.general.deputy)}</span>`)}</div>`; }).join(""); },
 
   envelope(o){ const out=[]; selectedSessions(o).forEach(s=>{ const seen=new Set(), ex=[]; s.rows.filter(r=>norm(r.subject)).sort((a,b)=>rankGrade(a.grade)-rankGrade(b.grade)).forEach(r=>{ const k=norm(r.grade)+"|"+norm(r.subject); if(!seen.has(k)){ seen.add(k); ex.push(r); } }); if(ex.length) out.push({s,ex}); });
