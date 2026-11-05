@@ -446,7 +446,7 @@ const REPORTS = [
   {id:"marking",t:"التصحيح والمراجعة",d:"المصححون والمراجعون والمدقق لكل مادة",o:"أفقي"},
   {id:"observers",t:"بيان الملاحظين",d:"ملاحظو اللجان والاحتياط لكل فترة",o:"أفقي"},
   {id:"handover",t:"سير ورقة الإجابة",d:"مسار ورقة الإجابة من اللجنة إلى الحفظ",o:"أفقي"},
-  {id:"envelope",t:"محضر فتح مظاريف الأسئلة",d:"محضر لكل مادة في كل فترة",o:"عمودي"},
+  {id:"envelope",t:"محضر فتح مظاريف الأسئلة",d:"محضر واحد لكل فترة بجميع موادها",o:"عمودي"},
   {id:"violation",t:"مخالفة أنظمة الاختبارات",d:"محضر مخالفة لطالب والإجراء المتخذ",o:"عمودي"},
 ];
 let reportOpts = {};
@@ -1026,21 +1026,24 @@ const RENDER = {
           ${i===0?[ctrl,corr,rev,mon,[],[],mon,rev,fin].map(t=>`<td rowspan="${n}" class="vleft">${VN(t,0,h*n)}</td>`).join(""):""}</tr>`).join("")}</tbody></table>
         ${foot(`مراقب اللجان : <span class="who">${esc(S.general.deputy)}</span>`)}</div>`; }).join(""); },
 
-  envelope(o){ const out=[]; selectedSessions(o).forEach(s=>{ const seen=new Set(); s.rows.filter(r=>norm(r.subject)).sort((a,b)=>rankGrade(a.grade)-rankGrade(b.grade)).forEach(r=>{ const k=norm(r.grade)+"|"+norm(r.subject); if(!seen.has(k)){ seen.add(k); out.push({s,r}); } }); });
+  envelope(o){ const out=[]; selectedSessions(o).forEach(s=>{ const seen=new Set(), ex=[]; s.rows.filter(r=>norm(r.subject)).sort((a,b)=>rankGrade(a.grade)-rankGrade(b.grade)).forEach(r=>{ const k=norm(r.grade)+"|"+norm(r.subject); if(!seen.has(k)){ seen.add(k); ex.push(r); } }); if(ex.length) out.push({s,ex}); });
     if(!out.length) return ""; const g=S.general;
-    return out.map(({s,r})=>{ const ctrl=uniq(s.rows.map(x=>x.ctrl))[0]||"";
+    return out.map(({s,ex})=>{ const ctrl=uniq(s.rows.map(x=>x.ctrl))[0]||"";
       const members=[[g.deputy,"وكيل المدرسة","رئيسًا"],[ctrl,"عضو لجنة التحكم والضبط","عضوًا"],["","معلم","عضوًا"],["","معلم","عضوًا"]];
+      const rh=Math.max(9,Math.min(14,70/ex.length));
       return `<div class="sheet">${head()}
       <div class="formbar"><div class="lbl">اسم النموذج</div><div class="nm">محضر فتح مظروف أسئلة</div><div class="lbl">رقم النموذج</div><div class="no">${ar(28)}</div></div>
-      <table class="pt big"><colgroup><col style="width:13%"><col style="width:18%"><col style="width:12%"><col style="width:23%"><col style="width:34%"></colgroup>
-        <thead><tr><th>اليوم</th><th>التاريخ</th><th>الفترة</th><th>المادة</th><th>الصف / المستوى</th></tr></thead>
-        <tbody><tr><td>${esc(s.day)}</td><td>${ar(s.date)}</td><td>${esc(s.period)}</td><td><b>${esc(r.subject)}</b></td><td style="white-space:nowrap;font-size:calc(14px*var(--fz))">${esc(r.grade)}</td></tr>
-        <tr><td colspan="5" class="stmt">تم فتح مظروف الأسئلة عند الساعة (&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;) ووجد: &nbsp; ☐ سليم &nbsp;&nbsp; ☐ غير سليم &nbsp; وتم تحرير محضر بذلك.</td></tr>
-        <tr><td colspan="5" class="sec">أعضاء اللجنة</td></tr></tbody></table>
-      <table class="pt big" style="margin-top:-1px"><colgroup><col style="width:8%"><col style="width:34%"><col style="width:24%"><col style="width:14%"><col style="width:20%"></colgroup>
-        <thead><tr><th>م</th><th>الاسم</th><th>عمله</th><th>الصفة</th><th>التوقيع</th></tr></thead>
-        <tbody>${members.map((m,i)=>`<tr style="height:15mm"><td>${ar(i+1)}</td><td class="name">${esc(m[0])}</td><td>${m[1]}</td><td>${m[2]}</td><td></td></tr>`).join("")}</tbody></table>
-      <div class="notes-lines"><b>ملاحظات:</b><div></div><div></div><div></div></div>
+      <table class="pt big"><colgroup><col style="width:30%"><col style="width:40%"><col style="width:30%"></colgroup>
+        <thead><tr><th>اليوم</th><th>التاريخ</th><th>الفترة</th></tr></thead>
+        <tbody><tr><td><b>${esc(s.day)}</b></td><td><b>${ar(s.date)}</b></td><td><b>${esc(s.period)}</b></td></tr></tbody></table>
+      <table class="pt big" style="margin-top:4mm"><colgroup><col style="width:7%"><col style="width:25%"><col style="width:32%"><col style="width:13%"><col style="width:23%"></colgroup>
+        <thead><tr><th>م</th><th>المادة</th><th>الصف / المستوى</th><th>ساعة الفتح</th><th>حالة المظروف</th></tr></thead>
+        <tbody>${ex.map((r,i)=>`<tr style="height:${rh}mm"><td>${ar(i+1)}</td><td><b>${esc(r.subject)}</b></td><td style="white-space:nowrap;font-size:calc(14px*var(--fz))">${esc(r.grade)}</td><td></td><td style="white-space:nowrap">☐ سليم &nbsp; ☐ غير سليم</td></tr>`).join("")}
+        <tr><td colspan="5" class="stmt">تم فتح مظاريف الأسئلة الموضحة أعلاه في الساعة المدونة أمام كل مادة، وتم التحقق من حالتها وتحرير محضر بذلك.</td></tr></tbody></table>
+      <table class="pt big" style="margin-top:4mm"><colgroup><col style="width:8%"><col style="width:34%"><col style="width:24%"><col style="width:14%"><col style="width:20%"></colgroup>
+        <thead><tr><th colspan="5">أعضاء اللجنة</th></tr><tr><th>م</th><th>الاسم</th><th>عمله</th><th>الصفة</th><th>التوقيع</th></tr></thead>
+        <tbody>${members.map((m,i)=>`<tr style="height:12mm"><td>${ar(i+1)}</td><td class="name">${esc(m[0])}</td><td>${m[1]}</td><td>${m[2]}</td><td></td></tr>`).join("")}</tbody></table>
+      <div class="notes-lines"><b>ملاحظات:</b><div></div><div></div></div>
       ${foot()}</div>`; }).join(""); },
 
   violation(o){ const g=S.general; const st=o.stu!==undefined&&o.stu!==""?S.students[+o.stu]:null; const ex=o.ex!==undefined&&o.ex!==""?examList()[+o.ex]:null;
