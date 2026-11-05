@@ -77,7 +77,7 @@ main{max-width:1180px;margin:0 auto;padding:20px max(16px,env(safe-area-inset-ri
 .entry .count{margin-top:auto;font-size:14px;font-weight:600}
 .entry svg{position:absolute;left:16px;top:16px;width:44px;height:44px;opacity:.35}
 
-.report-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.report-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
 .rep{display:flex;flex-direction:column;gap:4px;text-align:start;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;min-height:104px}
 .rep:hover{border-color:var(--teal)}
 .rep .no{font-size:12px;color:var(--sand);font-weight:700}
@@ -210,6 +210,53 @@ table.pt.dense td{padding:1px 3px;font-size:10.5px;line-height:1.25;white-space:
 .scard .seat b{display:block;font-size:24px;line-height:1.1}
 .scard .seat small{font-size:9px}
 
+/* سير ورقة الإجابة */
+table.flow{width:100%;border-collapse:collapse;table-layout:fixed;flex:1}
+table.flow .grp th{border:0;padding:0 0 2.5mm;vertical-align:bottom}
+table.flow .grp th div{border:1.5px solid #6f8794;border-radius:9px;background:#e9f0f3;margin:0 .8mm;padding:2.6mm 1mm;font-weight:800;font-size:13.5px;color:#1d2b33}
+table.flow .grp th div.per{font-size:16px}
+table.flow .grp th div.sm{font-size:11px;padding:1.4mm .5mm;line-height:1.3}
+table.flow .hd th{border:1.5px solid #8696a0;background:#fff;color:#111;font-weight:800;font-size:11.5px;padding:2mm 1mm;line-height:1.35}
+table.flow td{border:1.5px solid #8696a0;text-align:center;vertical-align:middle;padding:1mm;font-size:11.5px}
+table.flow td.shade{background:#eef2f4}
+table.flow td.b{font-weight:800;font-size:13px}
+table.flow td.obs{font-weight:700;font-size:11px;line-height:1.5}
+.vt{writing-mode:vertical-rl;transform:rotate(180deg);margin:auto;font-weight:700;font-size:12.5px;line-height:1.9;max-height:118mm;white-space:pre-wrap}
+/* محضر فتح المظاريف */
+.formbar{display:grid;grid-template-columns:auto 1fr auto auto;border:1.5px solid #333;background:#e3efd9;margin:4mm 0 6mm;font-size:17px;font-weight:700}
+.formbar div{padding:3mm 5mm;border-inline-start:1.5px solid #333;display:flex;align-items:center}
+.formbar div:first-child{border:0}
+.formbar .nm{font-size:20px}
+.formbar .no{font-size:22px;justify-content:center;min-width:20mm}
+table.pt.big th{font-size:15px;padding:3mm 2mm;background:#e3efd9;color:#111!important;border-color:#333}
+table.pt.big td{font-size:15px;padding:3mm 2mm;border-color:#333;background:#fff!important}
+table.pt.big td.stmt{font-size:16px;font-weight:600;padding:5mm 4mm;line-height:1.9}
+table.pt.big td.sec{font-weight:800;font-size:16px;background:#f3f7ef!important}
+.notes-lines{margin-top:8mm;font-size:15px}
+.notes-lines div{border-bottom:1px dotted #777;height:10mm}
+/* المخالفة */
+.viol .vgrid{display:grid;gap:3mm;margin-bottom:3mm}
+.viol .g3{grid-template-columns:2fr 1.3fr 1fr}
+.viol .g4{grid-template-columns:repeat(4,1fr)}
+.viol .g2{grid-template-columns:1fr 1fr}
+fieldset.vf{border:1.4px solid #3aa48f;border-radius:7px;margin:0 0 3mm;padding:1mm 4mm 2.5mm;min-width:0}
+.vgrid fieldset.vf{margin:0}
+fieldset.vf legend{color:#16866f;font-weight:700;font-size:13.5px;padding:0 2mm}
+fieldset.vf > div{font-size:14.5px;font-weight:600;text-align:center;min-height:7mm;line-height:1.8}
+fieldset.vf.tall > div{text-align:right;min-height:34mm}
+fieldset.vf.mid > div{text-align:right;min-height:22mm}
+.vopts{display:flex;flex-wrap:wrap;gap:1mm 5mm;justify-content:center}
+.vopts span{color:#777;font-weight:500}
+.vopts span.on{color:#111;font-weight:700}
+.vopts span.on::first-letter{color:#16866f}
+.vsign{display:grid;grid-template-columns:repeat(3,1fr);gap:6mm;margin-top:auto;padding-top:8mm;text-align:center;font-weight:700;font-size:14px}
+.vsign span{display:block;color:#16866f;font-size:13px}
+.vsign i{display:block;font-style:normal;font-weight:500;margin-top:3mm}
+.viol-form{margin-bottom:16px}
+.vchks{display:flex;flex-wrap:wrap;gap:6px 14px}
+.vchk{display:inline-flex;align-items:center;gap:6px;min-height:36px;font-size:15px}
+.vchk input{width:20px;height:20px;accent-color:var(--teal)}
+.vchks .sep{flex-basis:100%;height:0}
 /* المخطط */
 .chart-box{border:1px solid #333;border-radius:4px;padding:4mm;flex:1;min-width:0}
 .mini-ins{display:grid;grid-template-columns:repeat(5,1fr);gap:4mm;margin-top:6px}
@@ -260,10 +307,10 @@ table.pt.dense td{padding:1px 3px;font-size:10.5px;line-height:1.25;white-space:
 "use strict";
 /* ======================= البيانات ======================= */
 const STORE_KEY = "examCommitteesApp.v1";
-const HEADERS = ["العام الدراسي","الفصل الدراسي","اسم المدرسة","مدير المدرسة","وكيل المدرسة","الموجه الطلابي","المعلمون","أعضاء الكنترول",
+const HEADERS = ["العام الدراسي","الفصل الدراسي","اسم المدرسة","مدير المدرسة","وكيل المدرسة","الموجه الطلابي","المعلمون","أعضاء لجنة التحكم والضبط",
   "رقم الهوية","اسم الطالب","رقم الجلوس","الصف","القسم","اللجنة",
   "اليوم"," التاريخ ","الفترة","من","الى","الصف ","المادة","المعلم المصحح1","المعلم المراجع1","المعلم المصحح2","المعلم المراجع2","المعلم المدقق",
-  "اللجنة","مقر اللجنة","ملاحظ 1","ملاحظ 2","احتياط 1","احتياط 2","التحكم والضبط","الرصد واستخراج النتائج","المدقق"];
+  "اللجنة","مقر اللجنة","ملاحظ 1","ملاحظ 2","احتياط 1","احتياط 2","التحكم والضبط","الرصد واستخراج النتائج","المدقق","أعضاء لجنة الرصد وإخراج النتائج"];
 const COL = i => { let s="", n=i+1; while(n>0){ const m=(n-1)%26; s=String.fromCharCode(65+m)+s; n=Math.floor((n-1)/26);} return s; };
 
 const GENERAL_FIELDS = [
@@ -301,19 +348,19 @@ const DIST_FIELDS = [
   {k:"o2",label:"ملاحظ 2",opts:teacherOpts,g:"اللجنة والملاحظة"},
   {k:"s1",label:"احتياط 1",opts:teacherOpts,g:"اللجنة والملاحظة"},
   {k:"s2",label:"احتياط 2",opts:teacherOpts,g:"اللجنة والملاحظة"},
-  {k:"ctrl",label:"التحكم والضبط",opts:teacherOpts,g:"الكنترول"},
-  {k:"mon",label:"الرصد واستخراج النتائج",opts:teacherOpts,g:"الكنترول"},
-  {k:"aud2",label:"المدقق",opts:teacherOpts,g:"الكنترول"},
+  {k:"ctrl",label:"التحكم والضبط",opts:teacherOpts,g:"لجنة التحكم والضبط والرصد"},
+  {k:"mon",label:"الرصد واستخراج النتائج",opts:teacherOpts,g:"لجنة التحكم والضبط والرصد"},
+  {k:"aud2",label:"المدقق",opts:teacherOpts,g:"لجنة التحكم والضبط والرصد"},
 ];
 DIST_FIELDS.forEach((f,i)=>f.col=14+i);
 const GRADES=["الأول الثانوي (السنة المشتركة)","الثاني الثانوي","الثالث الثانوي"];
 const COMS10=["الأولى","الثانية","الثالثة","الرابعة","الخامسة","السادسة","السابعة","الثامنة","التاسعة","العاشرة"];
 const LOCS=["1ث1","1ث2","2ث1","2ث2","3ث1","3ث2"];
-function teacherOpts(){ return uniq([...S.teachers,...S.control]); }
+function teacherOpts(){ return uniq([...S.teachers,...S.control,...S.monitors]); }
 GENERAL_FIELDS.forEach((f,i)=>f.col=i);
 
 const DEFAULT_INS=["الحضور قبل الاختبار بوقت كافٍ مع إحضار الهوية المدرسية، والالتزام بالهدوء داخل القاعة والتقيد بالتعليمات.","الإجابة بالقلم الأزرق الجاف غير القابل للمحو، ويُمنع اصطحاب المقررات الدراسية أو ما له علاقة بالمادة.","يُمنع منعًا باتًا دخول أجهزة الجوال وغيرها إلى قاعة الاختبار.","التأكيد على أولياء الأمور بالالتزام بالحضور مع بداية الوقت المخصص لانصراف الطلاب."].join("\n");
-function blank(){ return {general:{year:"",term:"",school:"",principal:"",deputy:"",counselor:""},teachers:[],control:[],students:[],dist:[],
+function blank(){ return {general:{year:"",term:"",school:"",principal:"",deputy:"",counselor:""},teachers:[],control:[],monitors:[],students:[],dist:[],
   settings:{region:"منطقة عسير",track:"",logo:"",instructions:DEFAULT_INS}}; }
 
 let S = blank();
@@ -349,7 +396,7 @@ const sessLabel = s => [s.day,s.date,s.period?("الفترة "+s.period):""].fil
 
 function refreshLists(){
   const fill=(id,arr)=>{ $("#"+id).innerHTML = arr.map(v=>`<option value="${esc(v)}">`).join(""); };
-  fill("dl-teachers", uniq([...S.teachers,...S.control]));
+  fill("dl-teachers", teacherOpts());
   fill("dl-committees", uniq([...committees(), ...ORD.slice(0,10)]));
   fill("dl-grades", uniq([...S.dist.map(d=>d.grade),...S.students.map(s=>s.grade),"الأول الثانوي","الثاني الثانوي","الثالث الثانوي"]));
   fill("dl-subjects", uniq(S.dist.map(d=>d.subject)));
@@ -365,6 +412,8 @@ const REPORTS = [
   {id:"marking",t:"التصحيح والمراجعة",d:"المصححون والمراجعون والمدقق لكل مادة",o:"أفقي"},
   {id:"observers",t:"بيان الملاحظين",d:"ملاحظو اللجان والاحتياط لكل فترة",o:"أفقي"},
   {id:"handover",t:"سير ورقة الإجابة",d:"مسار ورقة الإجابة من اللجنة إلى الحفظ",o:"أفقي"},
+  {id:"envelope",t:"محضر فتح مظاريف الأسئلة",d:"محضر لكل مادة في كل فترة",o:"عمودي"},
+  {id:"violation",t:"مخالفة أنظمة الاختبارات",d:"محضر مخالفة لطالب والإجراء المتخذ",o:"عمودي"},
 ];
 let reportOpts = {};
 function go(h){ location.hash = h; }
@@ -409,9 +458,9 @@ function viewHome(){
 
   <div class="section-title">إدخال البيانات</div>
   <div class="entry-grid">
-    <button class="entry" data-go="general">${ICONS.gen}<span class="cols">A – H</span><h2>بيانات عامة</h2><p>المدرسة والإدارة والمعلمون وأعضاء الكنترول</p><span class="count">${g.school?"مكتملة جزئيًا":"لم تُعبّأ بعد"} · ${ar(S.teachers.length)} معلم</span></button>
+    <button class="entry" data-go="general">${ICONS.gen}<span class="cols">A – H · AJ</span><h2>بيانات عامة</h2><p>المدرسة والإدارة والمعلمون ولجنتا التحكم والضبط والرصد</p><span class="count">${g.school?"مكتملة جزئيًا":"لم تُعبّأ بعد"} · ${ar(S.teachers.length)} معلم</span></button>
     <button class="entry" data-go="students">${ICONS.stu}<span class="cols">I – N</span><h2>بيانات الطلاب</h2><p>الهوية والاسم ورقم الجلوس والصف واللجنة</p><span class="count">${ar(S.students.length)} طالب مسجّل</span></button>
-    <button class="entry" data-go="dist">${ICONS.dis}<span class="cols">O – AI</span><h2>بيانات التوزيع</h2><p>الجدول والتصحيح والملاحظة والكنترول</p><span class="count">${ar(S.dist.length)} سجل توزيع</span></button>
+    <button class="entry" data-go="dist">${ICONS.dis}<span class="cols">O – AI</span><h2>بيانات التوزيع</h2><p>الجدول والتصحيح والملاحظة والتحكم والرصد</p><span class="count">${ar(S.dist.length)} سجل توزيع</span></button>
   </div>
 
   <div class="section-title">التقارير</div>
@@ -446,12 +495,16 @@ function viewGeneral(){
   </div>
   <div class="panel"><h3>المعلمون <span class="col">G</span></h3>
     <div class="chips" id="chips-t"></div>
-    <div class="addrow fld"><input id="add-t" placeholder="اسم المعلم ثم اضغط إضافة"><button class="btn primary" id="btn-add-t">إضافة</button></div>
+    <div class="addrow fld"><input id="add-t" placeholder="اسم المعلم ثم اضغط إضافة"><button class="btn primary" id="btn-add-t">إضافة</button><button class="btn sand" id="xl-t">إضافة من Excel</button></div>
     <p class="hint">يمكنك لصق عدة أسماء دفعة واحدة، اسم في كل سطر.</p>
   </div>
-  <div class="panel"><h3>أعضاء الكنترول <span class="col">H</span></h3>
+  <div class="panel"><h3>أعضاء لجنة التحكم والضبط <span class="col">H</span></h3>
     <div class="chips" id="chips-c"></div>
-    <div class="addrow fld"><input id="add-c" placeholder="اسم عضو الكنترول"><button class="btn primary" id="btn-add-c">إضافة</button></div>
+    <div class="addrow fld"><input id="add-c" placeholder="اسم العضو ثم اضغط إضافة"><button class="btn primary" id="btn-add-c">إضافة</button><button class="btn sand" id="xl-c">إضافة من Excel</button></div>
+  </div>
+  <div class="panel"><h3>أعضاء لجنة الرصد وإخراج النتائج <span class="col">AJ</span></h3>
+    <div class="chips" id="chips-m"></div>
+    <div class="addrow fld"><input id="add-m" placeholder="اسم العضو ثم اضغط إضافة"><button class="btn primary" id="btn-add-m">إضافة</button><button class="btn sand" id="xl-m">إضافة من Excel</button></div>
   </div>
   <div class="panel"><h3>إعدادات رأس التقارير</h3>
     <div class="form-grid">
@@ -470,8 +523,32 @@ function viewGeneral(){
   const adder=(key,inp,btn,box)=>{ const add=()=>{ const names=$(inp).value.split(/\n|،|,/).map(norm).filter(Boolean); names.forEach(n=>{ if(!S[key].includes(n)) S[key].push(n); }); $(inp).value=""; save(); chips(key,box); };
     $(btn).onclick=add; $(inp).onkeydown=e=>{ if(e.key==="Enter"){e.preventDefault();add();} };
     $(inp).addEventListener("paste",e=>{ const t=(e.clipboardData||window.clipboardData).getData("text"); if(t.includes("\n")){ e.preventDefault(); $(inp).value=t; add(); } }); };
-  chips("teachers","#chips-t"); chips("control","#chips-c");
-  adder("teachers","#add-t","#btn-add-t","#chips-t"); adder("control","#add-c","#btn-add-c","#chips-c");
+  chips("teachers","#chips-t"); chips("control","#chips-c"); chips("monitors","#chips-m");
+  adder("teachers","#add-t","#btn-add-t","#chips-t"); adder("control","#add-c","#btn-add-c","#chips-c"); adder("monitors","#add-m","#btn-add-m","#chips-m");
+  const xl=(key,box,title)=>namesFromExcel(title,names=>{ let n=0; names.forEach(x=>{ if(!S[key].includes(x)){S[key].push(x);n++;} }); save(); chips(key,box); toast(`تمت إضافة ${n} اسم`); });
+  $("#xl-t").onclick=()=>xl("teachers","#chips-t","إضافة المعلمين من Excel");
+  $("#xl-c").onclick=()=>xl("control","#chips-c","إضافة أعضاء لجنة التحكم والضبط من Excel");
+  $("#xl-m").onclick=()=>xl("monitors","#chips-m","إضافة أعضاء لجنة الرصد وإخراج النتائج من Excel");
+}
+
+/* إضافة أسماء من Excel: لصق عمود أو اختيار ملف (يُقرأ أول عمود فيه أسماء) */
+function namesFromExcel(title, done){
+  const back=modalShell(`<h3>${esc(title)}</h3>
+    <p class="hint" style="margin-top:0">انسخ عمود الأسماء من Excel والصقه هنا، أو اختر ملف Excel وسيُقرأ أول عمود فيه أسماء.</p>
+    <div class="fld"><textarea id="nx-area" style="min-height:200px" placeholder="اسم في كل سطر"></textarea></div>
+    <div class="foot"><button class="btn primary" id="nx-ok">إضافة الأسماء</button><button class="btn sand" id="nx-file">اختيار ملف Excel</button><button class="btn" id="nx-x">إلغاء</button>
+    <input type="file" id="nx-input" accept=".xlsx,.xls,.csv" hidden></div>`);
+  const parse=t=>t.split(/\r?\n/).map(l=>norm(l.split("\t")[0])).filter(n=>n&&!/^(م|الاسم|اسم|المعلم|المعلمون|أعضاء.*)$/.test(n)&&!/^\d+$/.test(latin(n)));
+  back.querySelector("#nx-x").onclick=()=>back.remove();
+  back.querySelector("#nx-ok").onclick=()=>{ const names=uniq(parse(back.querySelector("#nx-area").value)); back.remove(); done(names); };
+  back.querySelector("#nx-file").onclick=()=>back.querySelector("#nx-input").click();
+  back.querySelector("#nx-input").onchange=e=>{ const f=e.target.files[0]; if(!f) return; if(typeof XLSX==="undefined"){ toast("مكتبة Excel لم تُحمّل — تأكد من الاتصال بالإنترنت"); return; }
+    const rd=new FileReader(); rd.onload=ev=>{ try{ const wb=XLSX.read(new Uint8Array(ev.target.result),{type:"array"}); const rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,raw:false,defval:""});
+      const width=Math.max(0,...rows.map(r=>r.length)); let best=-1,bc=0;
+      for(let c=0;c<width;c++){ const cnt=rows.filter(r=>/[\u0600-\u06FF]{2,}\s+[\u0600-\u06FF]{2,}/.test(String(r[c]||""))).length; if(cnt>bc){bc=cnt;best=c;} }
+      if(best<0){ toast("لم أجد عمود أسماء في الملف"); return; }
+      back.querySelector("#nx-area").value=rows.map(r=>norm(r[best])).filter(Boolean).join("\n"); toast("راجع الأسماء ثم اضغط «إضافة الأسماء»");
+    }catch(err){ toast("تعذّرت قراءة الملف"); } }; rd.readAsArrayBuffer(f); };
 }
 
 /* ======================= الطلاب ======================= */
@@ -596,12 +673,12 @@ function confirmBox(msg, okLabel, onOk){
 function exportXlsx(){
   if(typeof XLSX==="undefined"){ toast("مكتبة Excel لم تُحمّل — تأكد من الاتصال بالإنترنت"); return; }
   const g=S.general;
-  const n=Math.max(1, S.teachers.length, S.control.length, S.students.length, S.dist.length);
+  const n=Math.max(1, S.teachers.length, S.control.length, S.monitors.length, S.students.length, S.dist.length);
   const aoa=[HEADERS.slice()];
   for(let r=0;r<n;r++){
-    const row=new Array(35).fill("");
+    const row=new Array(36).fill("");
     if(r===0) GENERAL_FIELDS.forEach(f=>row[f.col]=g[f.k]||"");
-    row[6]=S.teachers[r]||""; row[7]=S.control[r]||"";
+    row[6]=S.teachers[r]||""; row[7]=S.control[r]||""; row[35]=S.monitors[r]||"";
     const s=S.students[r]; if(s) STUDENT_FIELDS.forEach(f=>row[f.col]=numIfId(s[f.k],f.k));
     const d=S.dist[r]; if(d) DIST_FIELDS.forEach(f=>row[f.col]=d[f.k]||"");
     aoa.push(row);
@@ -629,10 +706,11 @@ function importXlsx(file){
       rows.forEach(r=>{
         if(cell(r,6)) N.teachers.push(cell(r,6));
         if(cell(r,7)) N.control.push(cell(r,7));
+        if(cell(r,35)) N.monitors.push(cell(r,35));
         if(STUDENT_FIELDS.some(f=>cell(r,f.col))){ const s={}; STUDENT_FIELDS.forEach(f=>s[f.k]=cell(r,f.col)); N.students.push(s); }
         if(DIST_FIELDS.some(f=>cell(r,f.col))){ const d={}; DIST_FIELDS.forEach(f=>d[f.k]=cell(r,f.col)); N.dist.push(d); }
       });
-      N.teachers=uniq(N.teachers); N.control=uniq(N.control);
+      N.teachers=uniq(N.teachers); N.control=uniq(N.control); N.monitors=uniq(N.monitors);
       S=N; save(); route();
       toast(`تم الاستيراد: ${N.students.length} طالب، ${N.dist.length} سجل توزيع، ${N.teachers.length} معلم`);
     }catch(err){ toast("تعذّرت قراءة الملف. تأكد أنه ملف Excel بنفس الأعمدة."); }
@@ -652,21 +730,22 @@ function viewReport(id){
   const ses=sessions(), coms=committees();
   const o=reportOpts[id]||(reportOpts[id]={});
   let opts="";
-  if(["roll","observers","handover"].includes(id) && ses.length) opts+=`<div class="fld"><label for="o-ses">الفترة</label><select id="o-ses"><option value="">${id==="roll"?"بدون تعبئة (كشف عام)":"جميع الفترات"}</option>${ses.map(s=>`<option value="${esc(s.key)}" ${o.ses===s.key?"selected":""}>${esc(sessLabel(s))}</option>`).join("")}</select></div>`;
+  if(["roll","observers","handover","envelope"].includes(id) && ses.length) opts+=`<div class="fld"><label for="o-ses">الفترة</label><select id="o-ses"><option value="">${id==="roll"?"بدون تعبئة (كشف عام)":"جميع الفترات"}</option>${ses.map(s=>`<option value="${esc(s.key)}" ${o.ses===s.key?"selected":""}>${esc(sessLabel(s))}</option>`).join("")}</select></div>`;
   if(["cover","roll","cards"].includes(id) && coms.length) opts+=`<div class="fld"><label for="o-com">اللجنة</label><select id="o-com"><option value="">جميع اللجان</option>${coms.map(c=>`<option ${o.com===c?"selected":""}>${esc(c)}</option>`).join("")}</select></div>`;
   $("#app").innerHTML = `<div class="rep-bar">
       <button class="btn primary" id="b-print">طباعة / حفظ PDF</button>${opts}
       <span class="hint" style="margin:0">ورق A4 ${r.o}. في نافذة الطباعة اختر «حفظ في الملفات» لإنشاء PDF.</span>
-    </div><div class="paper-wrap" id="paper"></div>`;
+    </div>${id==="violation"?violPanel(o):""}<div class="paper-wrap" id="paper"></div>`;
   $("#b-print").onclick=()=>window.print();
+  if(id==="violation") bindViol(o,()=>draw());
   if($("#o-ses")) $("#o-ses").onchange=e=>{o.ses=e.target.value;draw();};
   if($("#o-com")) $("#o-com").onchange=e=>{o.com=e.target.value;draw();};
   const draw=()=>{ const html=RENDER[id](o); $("#paper").innerHTML = html || `<div class="panel empty"><b>لا توجد بيانات كافية لهذا التقرير</b>${REPORT_NEEDS[id]}</div>`; fitSheets(); fitPaper(); };
   draw();
 }
-const REPORT_NEEDS={cover:"أدخل الطلاب مع لجانهم في «بيانات الطلاب».",roll:"أدخل الطلاب مع لجانهم في «بيانات الطلاب».",cards:"أدخل الطلاب في «بيانات الطلاب».",
+const REPORT_NEEDS={envelope:"أدخل اليوم والتاريخ والفترة والصف والمادة في «بيانات التوزيع».",violation:"",cover:"أدخل الطلاب مع لجانهم في «بيانات الطلاب».",roll:"أدخل الطلاب مع لجانهم في «بيانات الطلاب».",cards:"أدخل الطلاب في «بيانات الطلاب».",
   schedule:"أدخل اليوم والتاريخ والفترة والصف والمادة في «بيانات التوزيع».",load:"أدخل أسماء المعلمين، والملاحظين في «بيانات التوزيع».",
-  marking:"أدخل المادة والمصححين والمراجعين في «بيانات التوزيع».",observers:"أدخل اللجان والملاحظين في «بيانات التوزيع».",handover:"أدخل اللجان والملاحظين وفريق الكنترول في «بيانات التوزيع»."};
+  marking:"أدخل المادة والمصححين والمراجعين في «بيانات التوزيع».",observers:"أدخل اللجان والملاحظين في «بيانات التوزيع».",handover:"أدخل اللجان والملاحظين ولجنتي التحكم والرصد في «بيانات التوزيع»."};
 /* تصغير محتوى الورقة تلقائيًا ليظهر كل تقرير في صفحة واحدة */
 function fitSheets(){ document.querySelectorAll("#paper .sheet").forEach(sh=>{
   if(sh.classList.contains("cover")) return;
@@ -770,9 +849,9 @@ const RENDER = {
       <div style="display:flex;gap:6mm;flex:1;min-height:0">
         <div style="width:95mm;flex:none"><table class="pt"><colgroup><col style="width:12%"><col style="width:56%"><col style="width:16%"><col style="width:16%"></colgroup>
           <thead><tr><th>م</th><th>المعلم</th><th>اللجان</th><th>احتياط</th></tr></thead>
-          <tbody>${list.map((t,i)=>`<tr style="height:${rowH}mm"><td>${ar(i+1)}</td><td class="name">${esc(t.n)}${t.ctl?' <span style="color:#a1262a;font-size:9px">(كنترول)</span>':""}</td><td style="${t.c===0?"background:#fbe3e3;color:#a1262a;font-weight:700":"font-weight:700"}">${ar(t.c)}</td><td>${ar(t.r)}</td></tr>`).join("")}
+          <tbody>${list.map((t,i)=>`<tr style="height:${rowH}mm"><td>${ar(i+1)}</td><td class="name">${esc(t.n)}${t.ctl?' <span style="color:#a1262a;font-size:9px">(تحكم وضبط)</span>':""}</td><td style="${t.c===0?"background:#fbe3e3;color:#a1262a;font-weight:700":"font-weight:700"}">${ar(t.c)}</td><td>${ar(t.r)}</td></tr>`).join("")}
           <tr><td colspan="2" style="background:#e3efe6;font-weight:700">مجموع اللجان</td><td colspan="2" style="background:#e3efe6;font-weight:700">${ar(total)}</td></tr></tbody></table></div>
-        <div class="chart-box"><div style="text-align:center;font-weight:700;font-size:15px;color:#0e5a57">عدد اللجان <span style="font-size:11px;color:#555">(الذهبي = عضو كنترول)</span></div><div style="height:calc(100% - 26px)">${svg}</div></div>
+        <div class="chart-box"><div style="text-align:center;font-weight:700;font-size:15px;color:#0e5a57">عدد اللجان <span style="font-size:11px;color:#555">(الذهبي = عضو لجنة التحكم والضبط)</span></div><div style="height:calc(100% - 26px)">${svg}</div></div>
       </div>${foot()}</div>`; },
 
   marking(){ const rows=S.dist.filter(d=>norm(d.subject)); if(!rows.length) return "";
@@ -803,23 +882,83 @@ const RENDER = {
         ${foot(`مراقب اللجان: <span class="who">${esc(S.general.deputy)}</span>`)}</div>`; }).join(""); },
 
   handover(o){ const ses=selectedSessions(o).filter(s=>s.rows.some(r=>norm(r.com)||norm(r.subject))); if(!ses.length) return "";
-    const V=t=>`<div style="writing-mode:vertical-rl;margin:auto;font-weight:600;line-height:1.9;max-height:100mm">${t}</div>`;
+    const V=t=>`<div class="vt">${t}</div>`;
     return ses.map(s=>{ const cm=new Map(); s.rows.filter(r=>norm(r.com)).forEach(r=>{ const k=norm(r.com); if(!cm.has(k)) cm.set(k,{com:k,obs:[]}); [r.o1,r.o2].map(norm).filter(Boolean).forEach(n=>{ if(!cm.get(k).obs.includes(n)) cm.get(k).obs.push(n); }); });
-      const coms=[...cm.values()].sort((a,b)=>cmpOrd(a.com,b.com)); const n=Math.max(1,coms.length);
-      const subj=uniq(s.rows.map(r=>r.subject)), grades=uniq(s.rows.map(r=>r.grade));
-      const pick=ks=>esc(uniq(s.rows.flatMap(r=>ks.map(k=>r[k]))).join("، "));
-      const ctrl=pick(["ctrl"]), corr=pick(["c1","c2"]), rev=pick(["r1","r2"]), aud=pick(["aud"]), mon=pick(["mon"]), aud2=pick(["aud2"]);
-      const h=Math.max(12,Math.min(40,120/n));
+      const coms=[...cm.values()].sort((a,b)=>cmpOrd(a.com,b.com)); const list=coms.length?coms:[{com:"",obs:[]}]; const n=list.length;
+      const ex=[]; const seen=new Set(); s.rows.filter(r=>norm(r.subject)).sort((a,b)=>rankGrade(a.grade)-rankGrade(b.grade)).forEach(r=>{ const k=norm(r.grade)+"|"+norm(r.subject); if(!seen.has(k)){seen.add(k);ex.push(r);} });
+      const names=ks=>esc(uniq(s.rows.flatMap(r=>ks.map(k=>r[k]))).join("     "));
+      const ctrl=names(["ctrl"]), corr=names(["c1","c2"]), rev=names(["r1","r2"]), mon=names(["mon"]), aud=names(["aud"]), fin=names(["aud2"]);
+      const h=Math.max(14,Math.min(42,128/n));
       return `<div class="sheet land">${head()}
-        <div class="p-title">سير ورقة الإجابة</div>
-        <div class="p-meta"><span>اليوم: <span class="v">${esc(s.day)}</span></span><span>التاريخ: <span class="v">${ar(s.date)}</span></span><span>الفترة: <span class="v">${esc(s.period)}</span></span></div>
-        <table class="pt"><colgroup><col style="width:5.5%"><col style="width:8%"><col style="width:8%"><col style="width:7%"><col style="width:10%"><col style="width:5%"><col style="width:8.5%"><col style="width:8.5%"><col style="width:8%"><col style="width:7.5%"><col style="width:8.5%"><col style="width:7.5%"><col style="width:8%"></colgroup>
-        <thead><tr><th>اليوم والتاريخ</th><th>المواد</th><th>الصفوف</th><th>اللجنة</th><th>ملاحظ اللجنة</th><th>عدد الأوراق</th><th>الاستلام من لجنة التحكم والضبط</th><th>التصحيح</th><th>المراجعة</th><th>التدقيق</th><th>الرصد وإخراج النتائج</th><th>مطابقة الكشف مع أوراق الإجابة</th><th>الاستلام النهائي والحفظ</th></tr></thead>
-        <tbody>${(coms.length?coms:[{com:"",obs:[]}]).map((c,i)=>`<tr style="height:${h}mm">${i===0?`<td rowspan="${n}">${V(esc(s.day)+" — "+ar(s.date))}</td><td rowspan="${n}">${V(esc(subj.join(" · ")))}</td><td rowspan="${n}">${V(esc(grades.join(" · ")))}</td>`:""}
-          <td style="font-weight:700">${esc(c.com)}</td><td style="font-size:10.5px">${esc(c.obs.join(" / "))}</td><td style="font-weight:700;color:#0e5a57">${c.com?ar(studentsOf(c.com).length):""}</td>
-          ${i===0?`<td rowspan="${n}">${V(ctrl)}</td><td rowspan="${n}">${V(corr)}</td><td rowspan="${n}">${V(rev)}</td><td rowspan="${n}">${V(aud)}</td><td rowspan="${n}">${V(mon)}</td><td rowspan="${n}">${V(aud2)}</td><td rowspan="${n}">${V(ctrl)}</td>`:""}</tr>`).join("")}</tbody></table>
-        ${foot(`مراقب اللجان: <span class="who">${esc(S.general.deputy)}</span>`)}</div>`; }).join(""); },
+        <table class="flow"><colgroup><col style="width:6%"><col style="width:5.5%"><col style="width:5.5%"><col style="width:6%"><col style="width:8%"><col style="width:5%"><col style="width:7%"><col style="width:7%"><col style="width:7%"><col style="width:7%"><col style="width:6%"><col style="width:6%"><col style="width:7%"><col style="width:7%"><col style="width:8%"></colgroup>
+        <thead><tr class="grp"><th colspan="6"><div class="per">الفترة : ( ${esc(s.period)} )</div></th><th colspan="3"><div>لجنة التصحيح والمراجعة</div></th><th colspan="3"><div>لجنة الرصد وإخراج النتائج</div></th><th colspan="2"><div>لجنة التصحيح والمراجعة</div></th><th><div class="sm">لجنة التحكم والضبط</div></th></tr>
+        <tr class="hd"><th>اليوم والتاريخ</th><th>المواد</th><th>الصفوف</th><th>اللجان</th><th>ملاحظ اللجنة</th><th>عدد الأوراق</th><th>الاستلام من لجنة التحكم والضبط</th><th>تصحيح</th><th>تدقيق</th><th>الاستلام من لجنة التحكم والضبط</th><th>رصد في نور</th><th>طباعة الكشف</th><th>الاستلام من لجنة التصحيح والمراجعة</th><th>مطابقة الكشف مع أوراق الإجابة</th><th>الاستلام النهائي والحفظ</th></tr></thead>
+        <tbody>${list.map((c,i)=>`<tr style="height:${h}mm">${i===0?`<td rowspan="${n}" class="shade">${V(`${esc(s.day)}  -  الموافق : ${ar(s.date)}`)}</td><td rowspan="${n}" class="shade">${V(esc(ex.map(r=>r.subject).join("  -  ")))}</td><td rowspan="${n}" class="shade">${V(esc(uniq(ex.map(r=>r.grade)).join("  -  ")))}</td>`:""}
+          <td class="shade b">${esc(c.com)}</td><td class="shade obs">${c.obs.map(esc).join("<br>")}</td><td class="shade b">${c.com?ar(studentsOf(c.com).length):""}</td>
+          ${i===0?`<td rowspan="${n}">${V(ctrl)}</td><td rowspan="${n}">${V(corr)}</td><td rowspan="${n}">${V(rev)}</td><td rowspan="${n}">${V(mon)}</td><td rowspan="${n}"></td><td rowspan="${n}"></td><td rowspan="${n}">${V(mon)}</td><td rowspan="${n}">${V(aud)}</td><td rowspan="${n}">${V(fin)}</td>`:""}</tr>`).join("")}</tbody></table>
+        ${foot(`مراقب اللجان : <span class="who">${esc(S.general.deputy)}</span>`)}</div>`; }).join(""); },
+
+  envelope(o){ const out=[]; selectedSessions(o).forEach(s=>{ const seen=new Set(); s.rows.filter(r=>norm(r.subject)).sort((a,b)=>rankGrade(a.grade)-rankGrade(b.grade)).forEach(r=>{ const k=norm(r.grade)+"|"+norm(r.subject); if(!seen.has(k)){ seen.add(k); out.push({s,r}); } }); });
+    if(!out.length) return ""; const g=S.general;
+    return out.map(({s,r})=>{ const ctrl=uniq(s.rows.map(x=>x.ctrl))[0]||"";
+      const members=[[g.deputy,"وكيل المدرسة","رئيسًا"],[ctrl,"عضو لجنة التحكم والضبط","عضوًا"],["","معلم","عضوًا"],["","معلم","عضوًا"]];
+      return `<div class="sheet">${head()}
+      <div class="formbar"><div class="lbl">اسم النموذج</div><div class="nm">محضر فتح مظروف أسئلة</div><div class="lbl">رقم النموذج</div><div class="no">${ar(28)}</div></div>
+      <table class="pt big"><colgroup><col style="width:18%"><col style="width:20%"><col style="width:17%"><col style="width:22%"><col style="width:23%"></colgroup>
+        <thead><tr><th>اليوم</th><th>التاريخ</th><th>الفترة</th><th>المادة</th><th>الصف / المستوى</th></tr></thead>
+        <tbody><tr><td>${esc(s.day)}</td><td>${ar(s.date)}</td><td>${esc(s.period)}</td><td><b>${esc(r.subject)}</b></td><td>${esc(r.grade)}</td></tr>
+        <tr><td colspan="5" class="stmt">تم فتح مظروف الأسئلة عند الساعة (&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;) ووجد: &nbsp; ☐ سليم &nbsp;&nbsp; ☐ غير سليم &nbsp; وتم تحرير محضر بذلك.</td></tr>
+        <tr><td colspan="5" class="sec">أعضاء اللجنة</td></tr></tbody></table>
+      <table class="pt big" style="margin-top:-1px"><colgroup><col style="width:8%"><col style="width:34%"><col style="width:24%"><col style="width:14%"><col style="width:20%"></colgroup>
+        <thead><tr><th>م</th><th>الاسم</th><th>عمله</th><th>الصفة</th><th>التوقيع</th></tr></thead>
+        <tbody>${members.map((m,i)=>`<tr style="height:15mm"><td>${ar(i+1)}</td><td class="name">${esc(m[0])}</td><td>${m[1]}</td><td>${m[2]}</td><td></td></tr>`).join("")}</tbody></table>
+      <div class="notes-lines"><b>ملاحظات:</b><div></div><div></div><div></div></div>
+      ${foot()}</div>`; }).join(""); },
+
+  violation(o){ const g=S.general; const st=o.stu!==undefined&&o.stu!==""?S.students[+o.stu]:null; const ex=o.ex!==undefined&&o.ex!==""?examList()[+o.ex]:null;
+    const obs = (st&&ex)? (ex.s.rows.find(r=>norm(r.com)===norm(st.committee))||{}) : {};
+    const box=(label,val,cls)=>`<fieldset class="vf ${cls||""}"><legend>${label}</legend><div>${val||"&nbsp;"}</div></fieldset>`;
+    const opts=(arr,sel)=>`<div class="vopts">${arr.map(t=>`<span class="${(sel||[]).includes(t)?"on":""}">${(sel||[]).includes(t)?"✓":"☐"} ${t}</span>`).join("")}</div>`;
+    return `<div class="sheet viol">${head()}<div class="p-title">محضر مخالفة أنظمة الاختبارات</div>
+      <div class="vgrid g3">${box("اسم الطالب",st?esc(st.name):"","wide")}${box("الصف",st?ar(st.grade):"")}${box("رقم الجلوس",st?ar(st.seat):"")}</div>
+      <div class="vgrid g4">${box("المادة",ex?esc(ex.r.subject):"")}${box("رقم اللجنة",st?esc(st.committee):"")}${box("الفترة",ex?esc(ex.s.period):"")}${box("تاريخ الاختبار",ex?ar(ex.s.date):"")}</div>
+      <div class="vgrid g2">${box("تكرار المخالفة",opts(VIOL.repeat,[o.repeat]))}${box("صفة المخالفة",opts(VIOL.nature,[o.nature]))}</div>
+      <div class="vgrid g2">${box("نوع المخالفة",opts(VIOL.types,o.types))}${box("الإجراء المتخذ",opts(VIOL.acts,o.acts))}</div>
+      ${box("وصف المخالفة كما تم ضبطها",o.desc?esc(o.desc).replace(/\n/g,"<br>"):"<span class='blank'></span>","tall")}
+      ${box("التوصية والإحالة",o.rec?esc(o.rec).replace(/\n/g,"<br>"):"<span class='blank'></span>","mid")}
+      <div class="vsign"><div><span>الملاحظ</span>${esc(obs.o1||"")||"..........................."}<i>التوقيع: ................</i></div><div><span>المشرف على اللجنة</span>${esc(g.deputy)||"..........................."}<i>التوقيع: ................</i></div><div><span>مدير المدرسة</span>${esc(g.principal)||"..........................."}<i>التوقيع: ................</i></div></div>
+      </div>`; },
 };
+const VIOL={repeat:["المرة الأولى","المرة الثانية","المرة الثالثة"],nature:["فردية","جماعية"],
+  types:["محاولة الغش","حيازة ورقة أو جهاز ممنوع","التحدث أو الإخلال بالنظام","الخروج دون إذن","مخالفة تعليمات الملاحظة"],
+  acts:["تنبيه شفهي وإكمال الاختبار","سحب الورقة الممنوعة","نقل الطالب إلى مقعد آخر","إيقاف الاختبار ورفع المحضر"]};
+function examList(){ const out=[]; sessions().forEach(s=>{ const seen=new Set(); s.rows.filter(r=>norm(r.subject)).forEach(r=>{ const k=norm(r.grade)+"|"+norm(r.subject); if(!seen.has(k)){seen.add(k);out.push({s,r});} }); }); return out; }
+function violPanel(o){ o.types=o.types||[]; o.acts=o.acts||[];
+  const stu=S.students.map((x,i)=>({x,i})).sort((a,b)=>cmpOrd(a.x.committee,b.x.committee)||String(a.x.name).localeCompare(String(b.x.name),"ar"));
+  const chk=(name,arr,sel,type)=>arr.map((t,i)=>`<label class="vchk"><input type="${type}" name="${name}" value="${esc(t)}" ${(type==="radio"?sel===t:(sel||[]).includes(t))?"checked":""}> ${t}</label>`).join("");
+  return `<div class="panel no-print viol-form">
+    <div class="form-grid">
+      <div class="fld"><label for="v-stu">الطالب</label><select id="v-stu"><option value="">— نموذج فارغ —</option>${stu.map(({x,i})=>`<option value="${i}" ${String(o.stu)===String(i)?"selected":""}>${esc(x.name)} — لجنة ${esc(x.committee)}</option>`).join("")}</select></div>
+      <div class="fld"><label for="v-ex">الاختبار</label><select id="v-ex"><option value="">—</option>${examList().map((e,i)=>`<option value="${i}" ${String(o.ex)===String(i)?"selected":""}>${esc(e.r.subject)} — ${esc(e.r.grade)} — ${esc(e.s.day)} ${esc(e.s.date)} (${esc(e.s.period)})</option>`).join("")}</select></div>
+      <div class="fld"><label>صفة المخالفة وتكرارها</label><div class="vchks">${chk("v-nature",VIOL.nature,o.nature,"radio")}<span class="sep"></span>${chk("v-repeat",VIOL.repeat,o.repeat,"radio")}</div></div>
+    </div>
+    <div class="form-grid" style="margin-top:12px">
+      <div class="fld"><label>نوع المخالفة</label><div class="vchks">${chk("v-types",VIOL.types,o.types,"checkbox")}</div></div>
+      <div class="fld"><label>الإجراء المتخذ</label><div class="vchks">${chk("v-acts",VIOL.acts,o.acts,"checkbox")}</div></div>
+      <div class="fld"><label for="v-desc">وصف المخالفة كما تم ضبطها</label><textarea id="v-desc" style="min-height:90px">${esc(o.desc||"")}</textarea></div>
+    </div>
+    <div class="fld" style="margin-top:12px"><label for="v-rec">التوصية والإحالة</label><textarea id="v-rec" style="min-height:70px">${esc(o.rec||"")}</textarea></div>
+  </div>`; }
+function bindViol(o,draw){
+  $("#v-stu").onchange=e=>{o.stu=e.target.value;draw();};
+  $("#v-ex").onchange=e=>{o.ex=e.target.value;draw();};
+  document.querySelectorAll('input[name="v-nature"]').forEach(x=>x.onchange=()=>{o.nature=x.value;draw();});
+  document.querySelectorAll('input[name="v-repeat"]').forEach(x=>x.onchange=()=>{o.repeat=x.value;draw();});
+  const multi=(name,key)=>document.querySelectorAll(`input[name="${name}"]`).forEach(x=>x.onchange=()=>{o[key]=[...document.querySelectorAll(`input[name="${name}"]:checked`)].map(c=>c.value);draw();});
+  multi("v-types","types"); multi("v-acts","acts");
+  $("#v-desc").oninput=e=>{o.desc=e.target.value;draw();};
+  $("#v-rec").oninput=e=>{o.rec=e.target.value;draw();};
+}
 function rankGrade(g){ const s=norm(g); const m=["الأول","الثاني","الثالث"].findIndex(x=>s.startsWith(x)); if(m>=0) return m; const n=parseInt(latin(s)); return isNaN(n)?50:n; }
 
 /* ======================= بيانات تجريبية ======================= */
@@ -829,6 +968,7 @@ function loadSample(){
   S.settings.track="مسارات";
   S.teachers=["أحمد سالم","خالد عبدالله","سعد محمد","فهد علي","ماجد حسن","ناصر يحيى","عبدالرحمن صالح","يوسف إبراهيم","عمر فيصل","بندر سعيد"];
   S.control=["تركي ناصر","وليد حمد"];
+  S.monitors=["سامي عبدالعزيز","مازن خالد"];
   const first=["محمد","عبدالله","فيصل","سلطان","نواف","راكان","مشعل","زياد","حسام","أنس","ياسر","هادي"], last=["العتيبي","الشهري","القحطاني","الغامدي","الزهراني","الدوسري"];
   const comsL=["الأولى","الثانية","الثالثة"], locs={"الأولى":"1ث1","الثانية":"2ث1","الثالثة":"3ث1"};
   let seat=1;
@@ -839,7 +979,7 @@ function loadSample(){
   const T=S.teachers; let k=0;
   days.forEach(([day,date,ex],di)=>{ comsL.forEach((c,ci)=>{ const [grade,subject]=ex[ci];
     S.dist.push({day,date,period:"الأولى",from:"7:00 ص",to:"9:30 ص",grade,subject,c1:T[(di+ci)%10],r1:T[(di+ci+3)%10],c2:T[(di+ci+1)%10],r2:T[(di+ci+4)%10],aud:"عمر فيصل",
-      com:c,loc:locs[c],o1:T[(k++)%10],o2:T[(k++)%10],s1:T[(di+7)%10],s2:"",ctrl:"تركي ناصر",mon:"وليد حمد",aud2:"بندر سعيد"}); }); });
+      com:c,loc:locs[c],o1:T[(k++)%10],o2:T[(k++)%10],s1:T[(di+7)%10],s2:"",ctrl:"تركي ناصر",mon:"سامي عبدالعزيز",aud2:"وليد حمد"}); }); });
 }
 
 /* ======================= تشغيل ======================= */
