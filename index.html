@@ -931,7 +931,7 @@ const RENDER = {
       <div class="nm">${esc(s.name)}</div>
       <div>السجل المدني: ${ar(s.id)}</div>
       <div>الصف: ${ar(s.grade)}${s.section?(" — "+esc(s.section)):""}</div>
-      <div class="row"><span>اللجنة: ${esc(s.committee)}</span><span>${ar(locationOf(s.committee))}</span></div>
+      <div>اللجنة: ${esc(s.committee)}</div>
     </div>`).join("")}</div></div>`).join(""); },
 
   schedule(){ const g=S.general; const rows=S.dist.filter(d=>norm(d.subject)&&norm(d.grade)); if(!rows.length) return "";
